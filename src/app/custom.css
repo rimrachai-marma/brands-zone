@@ -1,0 +1,66 @@
+.container-fluid {
+  width: 100%;
+  padding-left: 12px;
+  padding-right: 12px;
+  @media (width >= 40rem /* 640px */) {
+    max-width: 40rem /* 640px */;
+  }
+  @media (width >= 48rem /* 768px */) {
+    padding-left: 30px;
+    padding-right: 30px;
+    max-width: 48rem /* 768px */;
+  }
+  @media (width >= 64rem /* 1024px */) {
+    max-width: 64rem /* 1024px */;
+  }
+  @media (width >= 80rem /* 1280px */) {
+    max-width: 88rem /* 1310px */;
+  }
+  @media (width >= 96rem /* 1536px */) {
+    max-width: 112rem /* 1792px */;
+  }
+}
+
+.container {
+  width: 100%;
+  padding-left: 12px;
+  padding-right: 12px;
+  @media (width >= 40rem /* 640px */) {
+    max-width: 40rem /* 640px */;
+  }
+  @media (width >= 48rem /* 768px */) {
+    padding-left: 30px;
+    padding-right: 30px;
+    max-width: 48rem /* 768px */;
+  }
+  @media (width >= 64rem /* 1024px */) {
+    max-width: 64rem /* 1024px */;
+  }
+  @media (width >= 80rem /* 1280px */) {
+    max-width: 72rem /* 1568px */;
+  }
+  @media (width >= 96rem /* 1536px */) {
+    max-width: 80rem /* 1600px */;
+  }
+}
+
+a {
+  transition: all 0.3s linear;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+  -ms-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+}
+
+a,
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+span.swiper-pagination-bullet {
+  background: #f12029;
+}
+
+* {
+  word-break: break-all;
+}
