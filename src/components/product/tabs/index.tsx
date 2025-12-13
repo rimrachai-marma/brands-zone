@@ -1,6 +1,4 @@
-// "use client";
-
-import React, { Suspense } from "react";
+import React from "react";
 import { Product } from "@/types";
 import {
   Tabs as ShadcnTabs,
@@ -11,16 +9,12 @@ import {
 import Specifications from "./specifications";
 import Reviews from "./reviews";
 import VendorInfoTab from "./VendorInfoTab";
-import { getVendorProfileById } from "@/lib/actions/vendor";
 
 interface Props {
   product: Product;
 }
 
 const Tabs: React.FC<Props> = async ({ product }) => {
-  const result = await getVendorProfileById(product.vendor_id);
-
-
   return (
     <ShadcnTabs defaultValue="description">
       <TabsList className="border-b w-full flex gap-6 sm:gap-6 md:gap-8">
@@ -70,14 +64,7 @@ const Tabs: React.FC<Props> = async ({ product }) => {
 
       {/* brands */}
       <TabsContent value="vendor" className="pt-4">
-        <Suspense fallback={null}>
-          <VendorInfoTab
-            vendor={result?.data?.vendor}
-            rating={result?.data?.rating}
-            status_state={result?.data?.status_state}
-            stats={result?.data?.stats}
-          />
-        </Suspense>
+        <VendorInfoTab vendorId={product.vendor_id} />
       </TabsContent>
     </ShadcnTabs>
   );

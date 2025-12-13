@@ -4,7 +4,7 @@ import {
   BankingInfoData,
   BusinessInfoData,
   ShopInfoData,
-} from "@/app/(pages)/(vandor)/vendor/profile/_lib/schemas";
+} from "@/app/(pages)/(vandor)/brands/profile/_lib/schemas";
 import { serverEnv } from "@/data/env";
 import { getAuthToken } from "@/lib/actions/auth";
 import { ActionState, ApiResponse, ErrorData } from "@/types";
@@ -87,12 +87,14 @@ export async function verfy() {
   }
 }
 
-export async function getVendorProfile(): Promise<ApiResponse<{
-  vendor: Vendor;
-  rating: VendorRating;
-  stats: VendorStats;
-  status_state: StatusState;
-}> | null> {
+export async function getVendorProfile(): Promise<
+  ApiResponse<{
+    vendor: Vendor;
+    rating: VendorRating;
+    stats: VendorStats;
+    status_state: StatusState;
+  }>
+> {
   const token = await getAuthToken();
   try {
     const response = await fetch(`${API_BASE_URL}/vendor/profile`, {
@@ -106,16 +108,23 @@ export async function getVendorProfile(): Promise<ApiResponse<{
     return await response.json();
   } catch (error) {
     log("Error fetching vendor profile:", error);
-    return null;
+
+    return {
+      status: "error",
+      message: "An unexpected error occurred",
+      data: null,
+    };
   }
 }
 
-export async function getVendorProfileById(id: string): Promise<ApiResponse<{
-  vendor: Vendor;
-  rating: VendorRating;
-  stats: VendorStats;
-  status_state: StatusState;
-}> | null> {
+export async function getVendorProfileById(id: string): Promise<
+  ApiResponse<{
+    vendor: Vendor;
+    rating: VendorRating;
+    stats: VendorStats;
+    status_state: StatusState;
+  }>
+> {
   try {
     const response = await fetch(`${API_BASE_URL}/vendors/${id}`, {
       method: "GET",
@@ -124,7 +133,11 @@ export async function getVendorProfileById(id: string): Promise<ApiResponse<{
     return await response.json();
   } catch (error) {
     log("Error fetching vendor profile:", error);
-    return null;
+    return {
+      status: "error",
+      message: "An unexpected error occurred",
+      data: null,
+    };
   }
 }
 

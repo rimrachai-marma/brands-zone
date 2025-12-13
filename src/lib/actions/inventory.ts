@@ -9,11 +9,11 @@ import {
   PurchaseOrder,
 } from "@/types";
 import { getAuthToken } from "./auth";
-import { PurchaseOrderFormData } from "@/app/(pages)/(vandor)/vendor/purchase-orders/create/_components/_lib/schemas";
 import { serverEnv } from "@/data/env";
-import { ProductReturnFormData } from "@/app/(pages)/(vandor)/vendor/returns/create/_lib/schema";
 import { ProductDamage } from "@/types/product-loss-damage";
-import { LossDamageFormData } from "@/app/(pages)/(vandor)/vendor/losses-damages/create/_lib/schema";
+import { PurchaseOrderFormData } from "@/app/(pages)/(vandor)/brands/purchase-orders/create/_components/_lib/schemas";
+import { ProductReturnFormData } from "@/app/(pages)/(vandor)/brands/returns/create/_lib/schema";
+import { LossDamageFormData } from "@/app/(pages)/(vandor)/brands/losses-damages/create/_lib/schema";
 
 const API_BASE_URL = serverEnv.API_BASE_URL;
 

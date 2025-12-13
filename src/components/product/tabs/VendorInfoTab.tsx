@@ -8,24 +8,22 @@ import {
   Phone,
   Mail,
 } from "lucide-react";
-import { StatusState, Vendor, VendorRating, VendorStats } from "@/types";
 import Rating from "@/components/common/Rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { getVendorProfileById } from "@/lib/actions/vendor";
 
 interface Props {
-  vendor: Vendor;
-  rating: VendorRating;
-  stats: VendorStats;
-  status_state: StatusState;
+  vendorId: string;
 }
 
-const VendorInfoTab: React.FC<Props> = ({
-  vendor,
-  rating,
-  stats,
-  status_state,
-}) => {
+const VendorInfoTab: React.FC<Props> = async ({ vendorId }) => {
+  const result = await getVendorProfileById(vendorId);
+
+  if (!result.data) return null;
+
+  const { vendor, rating, stats, status_state } = result.data;
+
   return (
     <div className="space-y-6">
       {/* Header with Logo and Rating */}

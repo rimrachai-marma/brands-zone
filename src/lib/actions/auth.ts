@@ -1,6 +1,6 @@
 "use server";
 
-import { PasswordData } from "@/app/(pages)/(vandor)/vendor/profile/_lib/schemas";
+import { PasswordData } from "@/app/(pages)/(vandor)/brands/profile/_lib/schemas";
 import { serverEnv } from "@/data/env";
 import { ActionState, ErrorData, User } from "@/types";
 import LoginSignUpData from "@/types/auth";
