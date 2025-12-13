@@ -241,7 +241,7 @@ const ProfileOverview: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (state?.status === "success") {
-      router.push("/vendor/profile");
+      router.push("/brands/profile");
       setPreviewUrl(null);
       setIsOpen(false);
     }
