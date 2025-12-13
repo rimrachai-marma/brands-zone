@@ -53,7 +53,7 @@ export default async function VendorProductsPage(props: {
           <p className="text-slate-500 mt-1">Manage all platform products</p>
         </div>
         <Button asChild>
-          <Link href="/vendor/products/create">
+          <Link href="/brands/products/create">
             <Plus className="h-4 w-4 mr-2" />
             <span>Add Product</span>
           </Link>
