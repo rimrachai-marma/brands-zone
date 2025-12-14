@@ -22,3 +22,9 @@ export interface Categories {
   categories: Category[];
   pagination: PaginationMeta;
 }
+
+export type CategoryMini = {
+    id: string;
+    name: string;
+    slug: string;
+}

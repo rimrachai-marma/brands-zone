@@ -44,8 +44,7 @@ export default async function VendorProductsPage(props: {
 
   const result = await getProducts(query);
 
-
-    return (
+  return (
     <div className="max-w-7xl mx-auto space-y-8">
       <div className="flex justify-between items-end">
         <div>

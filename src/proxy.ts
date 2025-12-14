@@ -16,7 +16,7 @@ const publicRoutes = ["/"];
 function isAdminUser(user: User): boolean {
   return user.role === "admin";
 }
-function isBrandsUser(user: User): boolean {
+function isVendorsUser(user: User): boolean {
   return user.role === "vendor";
 }
 
@@ -50,7 +50,7 @@ export async function proxy(req: NextRequest) {
       redirectTo = "/admin/dashboard";
     }
 
-    if (isBrandsUser(user)) {
+    if (isVendorsUser(user)) {
       redirectTo = "/brands/dashboard";
     }
 
@@ -78,7 +78,7 @@ export async function proxy(req: NextRequest) {
   }
 
   // User exists but not an brands → prevent brands access
-  if (user && isBrandsRoute && !isBrandsUser(user)) {
+  if (user && isBrandsRoute && !isVendorsUser(user)) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 

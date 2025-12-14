@@ -57,9 +57,9 @@ const VendorRegistrationForm = () => {
 
   React.useEffect(() => {
     if (state?.status === "success") {
-      router.push("/vendor/profile");
+      router.push("/brands/profile");
     }
-  }, [state]);
+  }, [state, router]);
 
   const onSubmit = (data: VendorFormData) => {
     const formData = new FormData();

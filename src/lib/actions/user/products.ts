@@ -1,24 +1,32 @@
-import {ApiResponse, UserProduct} from "@/types";
+import {ApiResponse, CategoryMini, UserProduct} from "@/types";
 import {clientEnv} from "@/data/env";
 
-type Category = {
-    id: string;
-    name: string;
-    slug: string;
-}
 
 type ApiResult = {
     success: boolean;
-    data: Category[];
+    data: CategoryMini[];
     message?: string;
 }
 
 const API_BASE_URL = clientEnv.NEXT_PUBLIC_API_BASE_URL;
 
 
-export async function getUserTopCategories(): Promise<ApiResponse<Category[]>> {
+export async function getUserTopCategories({limit=4, is_random=false}: {
+    limit?: number,
+    is_random?: boolean
+}): Promise<ApiResponse<CategoryMini[]>> {
     try {
-        const url = `${API_BASE_URL}/user/top-categories`;
+        const params = new URLSearchParams();
+
+        if (limit) {
+            params.append("limit", limit.toString());
+        }
+
+        if (is_random) {
+            params.append("is_random", String(is_random));
+        }
+
+        const url = `${API_BASE_URL}/user/top-categories?${params.toString()}`;
         const response = await fetch(url);
 
         const result: ApiResult = await response.json();
@@ -56,7 +64,9 @@ export async function getUserTopCategories(): Promise<ApiResponse<Category[]>> {
 }
 
 
-export async function getUserTopCategoryProducts({slug}: { slug?: string | null }): Promise<ApiResponse<UserProduct[]>> {
+export async function getUserTopCategoryProducts({slug}: {
+    slug?: string | null
+}): Promise<ApiResponse<UserProduct[]>> {
     try {
         const url = `${API_BASE_URL}/user/categories/${slug}/products`;
         const response = await fetch(url);

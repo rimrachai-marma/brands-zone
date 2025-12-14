@@ -2,16 +2,16 @@
 
 import { getAuthToken } from "@/lib/actions/auth";
 import { ApiResponse, Product } from "@/types";
-import {serverEnv} from "@/data/env";
+import { serverEnv } from "@/data/env";
 
 // Configuration
 const API_BASE_URL = serverEnv.API_BASE_URL;
 
-export async function getProducts(
-  query: Record<string, string>
-): Promise<ApiResponse<{
+export async function getProducts(query: Record<string, string>): Promise<
+  ApiResponse<{
     products: Product[];
-}>|null> {
+  }>
+> {
   const searchParams = new URLSearchParams(query).toString();
 
   let queryString = "";

@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/types";
+import {UserProduct} from "@/types";
 import { Button } from "../ui/button";
 import { Eye, Heart, HeartCrack, ShoppingBag } from "lucide-react";
 import {
@@ -16,9 +16,10 @@ import toast from "react-hot-toast";
 import { toggleWishlist } from "@/lib/features/wishlist/wishlistSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import React from "react";
 
 interface Props {
-  product: Product;
+  product: UserProduct;
 }
 
 const ProductActionButtons: React.FC<Props> = ({ product }) => {

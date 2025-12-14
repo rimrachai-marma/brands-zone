@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductGrid from "@/components/Products/ProductGrid";
 import { getUserTopCategories, getUserTopCategoryProducts } from "@/lib/actions/user/products";
-import { Category, UserProduct } from "@/types";
+import { CategoryMini, UserProduct } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CategoriesTabs = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
+    const [categories, setCategories] = useState<CategoryMini[]>([]);
     const [products, setProducts] = useState<UserProduct[]>([]);
     const [activeTab, setActiveTab] = useState<string>("");
     const [loading, setLoading] = useState({
@@ -23,7 +23,7 @@ const CategoriesTabs = () => {
                 setLoading(prev => ({ ...prev, categories: true }));
                 setError(null);
 
-                const result = await getUserTopCategories();
+                const result = await getUserTopCategories({limit:4,is_random:false});
 
                 if (result.status === "success" && result.data) {
                     setCategories(result.data);

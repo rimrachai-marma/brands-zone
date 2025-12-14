@@ -10,23 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Search, MoreVertical, Edit, Trash2, Eye } from "lucide-react";
+import { Search } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   result: any;
 }
 
 const SupplierList: React.FC<Props> = ({ result }) => {
-  console.log(result);
-
   return (
     <Card>
       <CardHeader>
@@ -52,15 +43,22 @@ const SupplierList: React.FC<Props> = ({ result }) => {
                 <TableHead>Return</TableHead>
                 <TableHead>Damage</TableHead>
                 <TableHead>Balance</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {result.data.map((p, i) => (
                 <TableRow key={i}>
                   <TableCell>{i + 1}</TableCell>
-                  <TableCell>{p.id}</TableCell>
+                  <TableCell>
+                    <Button
+                      asChild
+                      variant="link"
+                      className="px-0 text-blue-500"
+                    >
+                      <Link href={`/brands/products/${p.id}`}>{p.id}</Link>
+                    </Button>
+                  </TableCell>
                   <TableCell>{p.product_name}</TableCell>
                   <TableCell>{p.opening_qty}</TableCell>
                   <TableCell>{p.purchase_qty}</TableCell>
@@ -69,24 +67,6 @@ const SupplierList: React.FC<Props> = ({ result }) => {
                   <TableCell>{p.damage_qty}</TableCell>
                   <TableCell>{p.balance_qty}</TableCell>
                   <TableCell>{p.amount}</TableCell>
-
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View Details
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

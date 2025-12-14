@@ -20,7 +20,7 @@ export default async function VendorPurchaseOrderDetailsPage({
   const { id } = await params;
 
   const result = await fetchPurchaseOrder(id);
-
+    console.log(result)
   if (!result.data) notFound();
 
   const subtotal = (items: PurchaseOrderItem[]) => {

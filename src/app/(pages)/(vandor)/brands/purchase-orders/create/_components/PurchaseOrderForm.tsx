@@ -371,6 +371,7 @@ const PurchaseOrderForm: React.FC = () => {
                       <div className="space-y-2">
                         <Label>Unit Cost *</Label>
                         <Controller
+                          disabled
                           name={`items.${index}.unit_cost`}
                           control={control}
                           render={({ field }) => (

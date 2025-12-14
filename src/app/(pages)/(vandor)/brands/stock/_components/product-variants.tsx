@@ -26,8 +26,11 @@ const ProductVariants: React.FC<Props> = ({ product }) => {
               <TableHead className="whitespace-nowrap">Attributes</TableHead>
               <TableHead className="whitespace-nowrap">Barcode</TableHead>
               <TableHead className="whitespace-nowrap">Price</TableHead>
-              <TableHead className="whitespace-nowrap">Sale Price</TableHead>
+              <TableHead className="whitespace-nowrap">Cost Price</TableHead>
               <TableHead className="whitespace-nowrap">Stock</TableHead>
+              <TableHead className="whitespace-nowrap">Reserved</TableHead>
+              <TableHead className="whitespace-nowrap">Available</TableHead>
+
               <TableHead className="whitespace-nowrap text-right">
                 Status
               </TableHead>
@@ -64,24 +67,57 @@ const ProductVariants: React.FC<Props> = ({ product }) => {
                     {variant.barcode}
                   </TableCell>
                   <TableCell className="text-xs sm:text-sm whitespace-nowrap">
-                    <span className="font-semibold text-slate-900">
-                      {formatCurrency(Number(variant.price), product.currency)}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {variant.sale_price ? (
-                      <span className="font-medium text-green-600">
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-slate-900">
                         {formatCurrency(
-                          Number(variant.sale_price),
+                          Number(variant.price),
                           product.currency
                         )}
                       </span>
-                    ) : (
-                      <span className="font-medium text-slate-700">N/A</span>
-                    )}
+                      {variant.sale_price && (
+                        <>
+                          <span className="text-xs text-green-600">Sale:</span>
+                          <span className="text-sm font-medium text-green-600">
+                            {formatCurrency(
+                              Number(variant.sale_price),
+                              product.currency
+                            )}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+
+                  <TableCell className="text-xs sm:text-sm whitespace-nowrap">
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-slate-900">
+                        {formatCurrency(
+                          Number(variant.cost_price),
+                          product.currency
+                        )}
+                      </span>
+                      <span className="text-sm text-teal-600">
+                        {(() => {
+                          const sellingPrice = variant.sale_price
+                            ? Number(variant.sale_price)
+                            : Number(variant.price);
+                          const costPrice = Number(variant.cost_price);
+                          const margin =
+                            ((sellingPrice - costPrice) / sellingPrice) * 100;
+                          return `${margin.toFixed(1)}% margin`;
+                        })()}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell className="font-semibold text-slate-900 whitespace-nowrap">
                     {variant.inventory?.quantity_in_stock ?? 0}
+                  </TableCell>
+                  <TableCell className="font-semibold text-slate-900 whitespace-nowrap">
+                    {variant.inventory?.reserved_quantity ?? 0}
+                  </TableCell>
+                  <TableCell className="font-semibold text-slate-900 whitespace-nowrap">
+                    {(variant.inventory?.quantity_in_stock ?? 0) -
+                      (variant.inventory?.reserved_quantity ?? 0)}
                   </TableCell>
                   <TableCell className="text-right">
                     <Badge

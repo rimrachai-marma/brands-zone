@@ -5,15 +5,16 @@ import { getVendorProfile } from "@/lib/actions/vendor";
 import { getUserProfile } from "@/lib/actions/user";
 import BannerUpload from "./_components/BannerUpload";
 import { clientEnv } from "@/data/env";
+import StatusAlertModal from "./_components/Modal";
 
 export default async function VendorProfilePage() {
   const vendorResult = await getVendorProfile();
   const userResult = await getUserProfile();
-console.log(vendorResult);
+
   if (!vendorResult || !userResult || !vendorResult.data || !userResult.data) {
     return null;
   }
-console.log("VendorProfilePage", vendorResult);
+
   return (
     <main className="bg-slate-50 p-6 lg:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -41,7 +42,7 @@ console.log("VendorProfilePage", vendorResult);
             statusState={vendorResult.data.status_state}
           />
         </div>
-
+        {/* 
         <StatusAlert
           status={vendorResult?.data?.vendor?.status}
           verified_at={vendorResult?.data?.vendor?.verified_at}
@@ -49,13 +50,21 @@ console.log("VendorProfilePage", vendorResult);
           didit_verification_url={
             vendorResult.data.vendor.didit_verification_url
           }
-        />
+        /> */}
 
         <Tabs
           vendor={vendorResult?.data?.vendor}
           user={userResult?.data?.user}
         />
       </div>
+
+      <StatusAlertModal
+        status={vendorResult?.data?.vendor?.status}
+        verified_at={vendorResult?.data?.vendor?.verified_at}
+        submitted_at={vendorResult.data.vendor.submitted_at}
+        didit_verification_url={vendorResult.data.vendor.didit_verification_url}
+        open={vendorResult?.data?.vendor?.status !== "verified"}
+      />
     </main>
   );
 }

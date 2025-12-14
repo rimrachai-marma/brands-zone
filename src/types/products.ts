@@ -126,6 +126,7 @@ export interface UserProduct {
     price: number;
     rating: number;
     slug: string;
+    count_in_stock?: number| undefined;
 }
 
 export interface HotProduct {

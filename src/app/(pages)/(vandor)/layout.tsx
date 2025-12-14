@@ -16,11 +16,7 @@ export default async function Layout({
     <SidebarProvider defaultOpen={defaultOpen}>
       <VendorSidebar />
       <SidebarInset>
-        <Navbar
-          userRole="vendor"
-          userName="My Store"
-          userEmail="vendor@mystore.com"
-        />
+        <Navbar />
         <main className="bg-slate-50 p-6 lg:p-8 overflow-auto">{children}</main>
       </SidebarInset>
     </SidebarProvider>
