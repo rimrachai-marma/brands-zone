@@ -87,7 +87,8 @@ const ProductList: React.FC<Props> = ({ products }) => {
         const totalValue = product.variants.reduce(
           (sum, variant) =>
             sum +
-            Number(variant.price) * (variant.inventory?.quantity_in_stock ?? 0),
+            Number(variant.sale_price ?? variant.price) *
+              (variant.inventory?.quantity_in_stock ?? 0),
           0
         );
 

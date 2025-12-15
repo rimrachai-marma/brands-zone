@@ -174,7 +174,7 @@ const ProductVariants: React.FC<Props> = ({ product }) => {
 
                   <TableCell className="font-semibold text-slate-900 whitespace-nowrap">
                     {formatCurrency(
-                      Number(variant.price) *
+                      Number(variant.sale_price ?? variant.price) *
                         (variant.inventory?.quantity_in_stock ?? 0),
                       product.currency
                     )}
