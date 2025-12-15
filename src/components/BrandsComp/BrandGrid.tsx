@@ -16,7 +16,7 @@ const BrandGrid = ({ brands }: BrandGridProps) => {
       }}
     >
       {brands.map((brand, idx) => (
-        <Link href={`/brands/${brand.id}`} key={brand.id}>
+        <Link href={`/brands-list/${brand.id}`} key={brand.id}>
           <motion.div
             className="border border-primary/20 w-full flex flex-col h-75 hover:shadow-lg group transition cursor-pointer relative overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
