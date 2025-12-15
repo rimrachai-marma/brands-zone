@@ -14,8 +14,56 @@ import { ProductDamage } from "@/types/product-loss-damage";
 import { PurchaseOrderFormData } from "@/app/(pages)/(vandor)/brands/purchase-orders/create/_components/_lib/schemas";
 import { ProductReturnFormData } from "@/app/(pages)/(vandor)/brands/returns/create/_lib/schema";
 import { LossDamageFormData } from "@/app/(pages)/(vandor)/brands/losses-damages/create/_lib/schema";
+import { InventoryProduct } from "@/types/inventory";
 
 const API_BASE_URL = serverEnv.API_BASE_URL;
+
+export async function getInventoryProducts(
+  query: Record<string, string>
+): Promise<
+  ApiResponse<{
+    products: InventoryProduct[];
+    pagination: PaginationMeta;
+  }>
+> {
+  const token = await getAuthToken();
+  const searchParams = new URLSearchParams(query).toString();
+
+  let queryString = "";
+  if (searchParams) {
+    queryString += "?" + searchParams;
+  }
+
+  try {
+    const url = `${API_BASE_URL}/vendor/inventory${queryString}`;
+    const response = await fetch(url, {
+      method: "Get",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: "error",
+        message: result.message || "Failed to fetch products",
+        data: null,
+      };
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      status: "error",
+      message:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      data: null,
+    };
+  }
+}
 
 export async function createPurchaseOrders(
   state: ActionState<{ purchase_order: PurchaseOrder } | ErrorData> | null,

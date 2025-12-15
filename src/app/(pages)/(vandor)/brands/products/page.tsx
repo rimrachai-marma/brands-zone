@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { ProductsTable } from "./_components/products-table";
-import { getProducts } from "./_lib/actions";
+import { getVendorProducts } from "@/lib/actions/products";
 
 export default async function VendorProductsPage(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -42,7 +42,8 @@ export default async function VendorProductsPage(props: {
     query.status = status;
   }
 
-  const result = await getProducts(query);
+  const result = await getVendorProducts(query);
+  console.log(result);
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">

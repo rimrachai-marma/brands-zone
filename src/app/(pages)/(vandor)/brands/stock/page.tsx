@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProductList from "./_components/product-list";
 import SearchTableData from "@/components/shared/SearchTableData";
 import { getProducts } from "@/lib/actions/products";
+import { getInventoryProducts } from "@/lib/actions/inventory";
 
 export default async function Page(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -21,7 +22,9 @@ export default async function Page(props: {
     query.page = page;
   }
 
-  const result = await getProducts(query);
+  const result = await getInventoryProducts(query);
+
+  console.log(result);
 
   return (
     <main className="flex-1 bg-slate-50 p-4 sm:p-6 lg:p-8">

@@ -11,7 +11,14 @@ const protectedRoutes = ["/profile"];
 const adminRoutes = ["/admin"];
 const brandsRouts = ["/brands"];
 const authRoutes = ["/login", "/signup"];
-const publicRoutes = ["/"];
+const publicRoutes = [
+  "/",
+  "/brands-list",
+  "/about-us",
+  "/contact-us",
+  "/blog",
+  "/search",
+];
 
 function isAdminUser(user: User): boolean {
   return user.role === "admin";
@@ -27,7 +34,9 @@ export async function proxy(req: NextRequest) {
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
   const isBrandsRoute = brandsRouts.some((route) => pathname.startsWith(route));
   const isAuthRoute = authRoutes.includes(pathname);
-  const isPublicRoute = publicRoutes.includes(pathname);
+  const isPublicRoute =
+    publicRoutes.includes(pathname) ||
+    ["/products"].some((route) => pathname.startsWith(route));
 
   const authToken = await getAuthToken();
 
