@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ProductList from "./_components/product-list";
 import SearchTableData from "@/components/shared/SearchTableData";
-import { getProducts } from "@/lib/actions/products";
 import { getInventoryProducts } from "@/lib/actions/inventory";
 
 export default async function Page(props: {
@@ -12,7 +11,9 @@ export default async function Page(props: {
   const keyword = searchParams?.keyword as string | undefined;
   const page = searchParams?.page as string | undefined;
 
-  const query: Record<string, string> = {};
+  const query: Record<string, string> = {
+    status: "published",
+  };
 
   if (keyword) {
     query.keyword = keyword;
@@ -23,8 +24,6 @@ export default async function Page(props: {
   }
 
   const result = await getInventoryProducts(query);
-
-  console.log(result);
 
   return (
     <main className="flex-1 bg-slate-50 p-4 sm:p-6 lg:p-8">

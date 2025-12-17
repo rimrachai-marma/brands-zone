@@ -8,9 +8,9 @@ import { getAuthToken } from "./auth";
 const API_BASE_URL = serverEnv.API_BASE_URL;
 
 export async function create(
-  state: ActionState<{ supplier: Supplier } | ErrorData> | null,
+  state: ActionState<{ supplier: Supplier }, ErrorData> | null,
   data: FormData
-): Promise<ActionState<{ supplier: Supplier }> | null> {
+): Promise<ActionState<{ supplier: Supplier }, ErrorData> | null> {
   const token = await getAuthToken();
 
   const payload = {

@@ -45,6 +45,7 @@ import { formatCurrency } from "@/utils/formaters";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Product } from "@/types";
+import { cn } from "@/lib/utils";
 
 interface Props {
   products: Omit<Product, "reviews">[];
@@ -304,13 +305,17 @@ export const ProductsTable: React.FC<Props> = ({ products }) => {
                       </TableCell>
                       <TableCell>
                         <Badge
-                          variant={
-                            product.status === "published"
-                              ? "default"
-                              : "secondary"
-                          }
+                          className={cn(
+                            "capitalize border text-xs",
+                            product.status === "published" &&
+                              "bg-green-50 text-green-700 border-green-300",
+                            product.status === "draft" &&
+                              "bg-yellow-50 text-yellow-700 border-yellow-300",
+                            product.status === "archived" &&
+                              "bg-red-50 text-red-700 border-red-300"
+                          )}
                         >
-                          <span className="capitalize">{product.status}</span>
+                          {product.status}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">

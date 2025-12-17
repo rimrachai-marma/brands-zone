@@ -162,10 +162,10 @@ export async function getProduct(
 }
 
 export async function createProduct(
-  state: ActionState<{ product: Product } | ErrorData> | null,
+  state: ActionState<{ product: Product }, ErrorData> | null,
 
   formData: ProductFormData
-): Promise<ActionState<{ product: Product } | ErrorData> | null> {
+): Promise<ActionState<{ product: Product }, ErrorData> | null> {
   const token = await getAuthToken();
 
   if (!token) {
@@ -176,12 +176,6 @@ export async function createProduct(
     };
   }
 
-  const dataWithDefaults = {
-    ...formData,
-    status: "published",
-    published_at: new Date().toISOString(),
-  };
-
   try {
     const response = await fetch(`${API_BASE_URL}/vendor/products`, {
       method: "POST",
@@ -189,7 +183,7 @@ export async function createProduct(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(dataWithDefaults),
+      body: JSON.stringify(formData),
     });
 
     const result = await response.json();

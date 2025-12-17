@@ -40,14 +40,6 @@ export function SEOSection({ form }: Props) {
     }
   };
 
-  const removeKeyword = (keyword: string) => {
-    const current = form.getValues("meta_keywords") || [];
-    form.setValue(
-      "meta_keywords",
-      current.filter((k) => k !== keyword)
-    );
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -148,7 +140,7 @@ export function SEOSection({ form }: Props) {
                 <Input
                   placeholder="https://example.com/products/..."
                   {...field}
-                  value={field.value || ""}
+                  value={field.value ?? ""}
                 />
               </FormControl>
               <FormDescription>

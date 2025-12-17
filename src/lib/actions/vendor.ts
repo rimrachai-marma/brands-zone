@@ -16,9 +16,9 @@ import { redirect } from "next/navigation";
 const API_BASE_URL = serverEnv.API_BASE_URL;
 
 export async function register(
-  state: ActionState<{ vandor: Vendor } | ErrorData> | null,
+  state: ActionState<{ vandor: Vendor }, ErrorData> | null,
   formData: FormData
-): Promise<ActionState<{ vandor: Vendor }> | null> {
+): Promise<ActionState<{ vandor: Vendor }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {
@@ -142,9 +142,9 @@ export async function getVendorProfileById(id: string): Promise<
 }
 
 export async function updateCover(
-  state: ActionState<{ vandor: Vendor } | ErrorData> | null,
+  state: ActionState<{ vandor: Vendor }, ErrorData> | null,
   formData: { banner: string }
-): Promise<ActionState<{ vandor: Vendor }> | null> {
+): Promise<ActionState<{ vandor: Vendor }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {
@@ -172,9 +172,9 @@ export async function updateCover(
 }
 
 export async function updateAvatar(
-  state: ActionState<{ vandor: Vendor } | ErrorData> | null,
+  state: ActionState<{ vandor: Vendor }, ErrorData> | null,
   formData: { logo: string }
-): Promise<ActionState<{ vandor: Vendor }> | null> {
+): Promise<ActionState<{ vandor: Vendor }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {
@@ -199,11 +199,14 @@ export async function updateAvatar(
 }
 
 export default async function update(
-  state: ActionState<{ vendor: Vendor } | ErrorData> | null,
+  state: ActionState<{ vendor: Vendor }, ErrorData> | null,
   data: ShopInfoData | BankingInfoData | BusinessInfoData
-): Promise<ActionState<{
-  vendor: Vendor;
-}> | null> {
+): Promise<ActionState<
+  {
+    vendor: Vendor;
+  },
+  ErrorData
+> | null> {
   const token = await getAuthToken();
   try {
     const response = await fetch(`${API_BASE_URL}/vendor/profile`, {

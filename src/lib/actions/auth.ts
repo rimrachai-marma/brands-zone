@@ -13,9 +13,9 @@ const TOKEN_COOKIE_NAME = serverEnv.TOKEN_COOKIE_NAME || "access_token";
 const TOKEN_EXPIRES_IN = parseInt(serverEnv.TOKEN_EXPIRES_IN || "2592000"); // 30 days
 
 export async function loginAction(
-  state: ActionState<LoginSignUpData | ErrorData> | null,
+  state: ActionState<LoginSignUpData, ErrorData> | null,
   formData: FormData
-): Promise<ActionState<LoginSignUpData> | null> {
+): Promise<ActionState<LoginSignUpData, ErrorData> | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -53,9 +53,9 @@ export async function loginAction(
 }
 
 export async function signupAction(
-  state: ActionState<LoginSignUpData | ErrorData> | null,
+  state: ActionState<LoginSignUpData, ErrorData> | null,
   formData: FormData
-): Promise<ActionState<LoginSignUpData> | null> {
+): Promise<ActionState<LoginSignUpData, ErrorData> | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/signup`, {
       method: "POST",
@@ -95,9 +95,9 @@ export async function signupAction(
 }
 
 export async function brandsSignupAction(
-  state: ActionState<LoginSignUpData | ErrorData> | null,
+  state: ActionState<LoginSignUpData, ErrorData> | null,
   formData: FormData
-): Promise<ActionState<LoginSignUpData> | null> {
+): Promise<ActionState<LoginSignUpData, ErrorData> | null> {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/vendor/signup`, {
       method: "POST",
@@ -176,9 +176,9 @@ export async function logout() {
 }
 
 export default async function updatePassword(
-  state: ActionState<null> | null,
+  state: ActionState<null, ErrorData> | null,
   data: PasswordData
-): Promise<ActionState<null> | null> {
+): Promise<ActionState<null, ErrorData> | null> {
   const token = await getAuthToken();
   try {
     const response = await fetch(`${API_BASE_URL}/auth/change-password`, {

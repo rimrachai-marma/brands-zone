@@ -27,13 +27,20 @@ export interface PaginationMeta {
 
 export interface ErrorData {
   errors?: Record<string, string[]>;
+  duplicates?: string[];
 }
 
-export type ActionState<T> = {
-  status: "success" | "error";
-  message: string;
-  data: T | null;
-};
+export type ActionState<TSuccess, TError> =
+  | {
+      status: "success";
+      message: string;
+      data: TSuccess;
+    }
+  | {
+      status: "error";
+      message: string;
+      data: TError | null;
+    };
 
 // locations
 export interface Timezone {

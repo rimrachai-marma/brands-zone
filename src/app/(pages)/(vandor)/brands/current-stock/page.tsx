@@ -33,11 +33,12 @@ export default async function VendorSuppliersPage(props: {
             <h1 className="text-3xl font-bold text-slate-900">Current Stock</h1>
             <p className="text-slate-500 mt-1"></p>
           </div>
-         
         </div>
 
         <SupplierList result={result} />
       </div>
+
+      <pre className="hidden">{JSON.stringify(result, null, 2)}</pre>
     </main>
   );
 }

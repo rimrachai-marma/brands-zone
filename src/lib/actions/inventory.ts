@@ -66,10 +66,10 @@ export async function getInventoryProducts(
 }
 
 export async function createPurchaseOrders(
-  state: ActionState<{ purchase_order: PurchaseOrder } | ErrorData> | null,
+  state: ActionState<{ purchase_order: PurchaseOrder }, ErrorData> | null,
 
   formData: PurchaseOrderFormData
-): Promise<ActionState<{ purchase_order: PurchaseOrder } | ErrorData> | null> {
+): Promise<ActionState<{ purchase_order: PurchaseOrder }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {
@@ -130,10 +130,10 @@ export async function getPurchaseOrders(
 }
 
 export async function createProductReturn(
-  state: ActionState<{ productreturn: ProductReturn } | ErrorData> | null,
+  state: ActionState<{ productreturn: ProductReturn }, ErrorData> | null,
 
   formData: ProductReturnFormData
-): Promise<ActionState<{ productreturn: ProductReturn } | ErrorData> | null> {
+): Promise<ActionState<{ productreturn: ProductReturn }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {
@@ -158,10 +158,10 @@ export async function createProductReturn(
 }
 
 export async function createProductDamage(
-  state: ActionState<{ productDamage: ProductDamage } | ErrorData> | null,
+  state: ActionState<{ productDamage: ProductDamage }, ErrorData> | null,
 
   formData: LossDamageFormData
-): Promise<ActionState<{ productDamage: ProductDamage } | ErrorData> | null> {
+): Promise<ActionState<{ productDamage: ProductDamage }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {

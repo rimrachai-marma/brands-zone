@@ -100,13 +100,13 @@ const ProductList: React.FC<Props> = ({ products }) => {
         return (
           <div
             key={product.id}
-            className="border rounded-lg bg-white overflow-hidden"
+            className="border rounded-lg overflow-hidden bg-white"
           >
             <div
               className="p-4 hover:bg-slate-50 cursor-pointer"
               onClick={() => toggleProduct(product.id)}
             >
-              <div className="flex items-start sm:items-center justify-between gap-3">
+              <div className="flex items-start sm:items-center justify-between gap-">
                 <div className="flex items-start sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
                   <Button
                     variant="ghost"
@@ -127,7 +127,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
                     className="rounded-md object-cover"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <h3 className="font-semibold text-slate-900 text-sm sm:text-base">
                         {product.name}
                       </h3>
@@ -138,12 +138,6 @@ const ProductList: React.FC<Props> = ({ products }) => {
                           className="text-xs whitespace-nowrap"
                         >
                           {product.brand.name}
-                        </Badge>
-                      )}
-
-                      {product.status === "draft" && (
-                        <Badge className="bg-gray-200 text-gray-800 border border-gray-400 text-xs whitespace-nowrap">
-                          Draft
                         </Badge>
                       )}
 
@@ -161,7 +155,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
                       )}
                     </div>
 
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-500 mt-1">
+                    <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs sm:text-sm text-slate-500 mt-1">
                       <span className="whitespace-nowrap">
                         {product.variants.length} variant
                         {product.variants.length !== 1 ? "s" : ""}
@@ -182,7 +176,7 @@ const ProductList: React.FC<Props> = ({ products }) => {
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 mt-2 border-t border-slate-200 pt-2">
+                    <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-600 mt-2 border-t border-slate-200 pt-2">
                       <span className="whitespace-nowrap flex items-center gap-1">
                         <TrendingUp className="h-3 w-3 text-green-600" />
                         <span className="text-green-600 font-medium">

@@ -85,7 +85,7 @@ export function VendorSidebar() {
 
         {
           icon: ChartCandlestick,
-          label: "Stock",
+          label: "Current Stock Details",
           href: "/brands/stock",
         },
 

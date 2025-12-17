@@ -20,7 +20,7 @@ const Header = async () => {
         <div className="container-fluid mx-auto space-y-4">
           <div className="flex items-center justify-between gap-3">
             <HeaderTerms />
-            <Suspense>
+            <Suspense fallback={null}>
               <HeaderAcount user={result?.data?.user} />
             </Suspense>
           </div>

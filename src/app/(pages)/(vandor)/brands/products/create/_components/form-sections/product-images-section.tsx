@@ -34,7 +34,7 @@ import { ProductFormData } from "@/schema/products/create";
 interface Props {
   form: UseFormReturn<ProductFormData>;
   uploadEndpoint: string;
-  token?:string
+  token?: string;
 }
 
 interface UploadedImage {
@@ -50,7 +50,11 @@ interface UploadState {
   xhr?: XMLHttpRequest;
 }
 
-export function ProductImagesSection({ form, uploadEndpoint,token=""}: Props) {
+export function ProductImagesSection({
+  form,
+  uploadEndpoint,
+  token = "",
+}: Props) {
   const [dragActive, setDragActive] = useState<number | null>(null);
   const [uploadStates, setUploadStates] = useState<Record<number, UploadState>>(
     {}
@@ -153,13 +157,13 @@ export function ProductImagesSection({ form, uploadEndpoint,token=""}: Props) {
         // Configure request
         xhr.open("POST", uploadEndpoint);
         xhr.timeout = 60000 * 2; // 2 minutes timeout
-          if (token) {
-              xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-          }
+        if (token) {
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        }
         xhr.send(formData);
       });
     },
-    [uploadEndpoint, updateUploadState,token]
+    [uploadEndpoint, updateUploadState, token]
   );
 
   const cancelUpload = (index: number) => {
@@ -435,7 +439,7 @@ export function ProductImagesSection({ form, uploadEndpoint,token=""}: Props) {
                           <img
                             src={form.watch(`images.${index}.url`)}
                             alt={
-                              form.watch(`images.${index}.alt_text`) ||
+                              form.watch(`images.${index}.alt_text`) ??
                               "Preview"
                             }
                             className="h-full w-full rounded-lg object-cover border border-gray-200"

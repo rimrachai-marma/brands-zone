@@ -90,6 +90,7 @@ export function SpecificationsSection({
             />
             <Button type="button" onClick={addSpecification} variant="outline">
               <Plus className="h-4 w-4" />
+              <span>Add</span>
             </Button>
           </div>
           {specifications && Object.entries(specifications).length > 0 && (

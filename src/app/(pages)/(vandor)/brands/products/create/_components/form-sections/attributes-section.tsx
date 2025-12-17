@@ -339,8 +339,7 @@ function AttributeItem({
             {optionFields.map((option, optionIndex) => (
               <Badge
                 key={option.id}
-                variant="secondary"
-                className="flex items-center gap-1 px-3 py-1.5"
+                className="bg-gray-200 border-gray-300 text-gray-900 flex items-center gap-1 px-3 py-1.5"
               >
                 {attributeType === "color" && option.metadata?.hex && (
                   <div
@@ -349,9 +348,9 @@ function AttributeItem({
                   />
                 )}
                 <span className="font-medium">{option.label}</span>
-                <span className="text-xs text-gray-500">({option.value})</span>
+                <span className="text-xs text-gray-600">({option.value})</span>
                 {attributeType === "color" && option.metadata?.hex && (
-                  <span className="text-xs text-gray-400 font-mono">
+                  <span className="text-xs font-mono">
                     {option.metadata.hex}
                   </span>
                 )}

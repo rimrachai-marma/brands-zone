@@ -13,8 +13,7 @@ export const productSchema = z.object({
   short_description: z
     .string()
     .max(500, "Short description cannot exceed 500 characters")
-    .optional()
-    .nullable(),
+    .optional(),
   brand_id: z.string().optional(),
 
   // Categories
@@ -26,14 +25,6 @@ export const productSchema = z.object({
     .length(3, "Currency code must be exactly 3 characters")
     .optional(),
   low_stock_threshold: z.number().int().min(0).optional(),
-
-  // Default Physical Properties
-  weight: z.number().min(0).optional(),
-  weight_unit: z.enum(["kg", "g", "lb", "oz"]).optional(),
-  length: z.number().min(0).optional(),
-  width: z.number().min(0).optional(),
-  height: z.number().min(0).optional(),
-  dimension_unit: z.enum(["cm", "inch", "m"]).optional(),
 
   // Specifications
   specifications: z.record(z.string(), z.string()).optional(),
@@ -80,7 +71,6 @@ export const productSchema = z.object({
         price: z.number().min(0, "Price must be at least 0"),
         sale_price: z.number().min(0).optional(),
         cost_price: z.number().min(0).optional(),
-        stock_quantity: z.number().int().min(0).optional(),
         weight: z.number().min(0).optional(),
         weight_unit: z.enum(["kg", "g", "lb", "oz"]).optional(),
         length: z.number().min(0).optional(),
@@ -132,13 +122,16 @@ export const productSchema = z.object({
     .max(500, "Meta description cannot exceed 500 characters")
     .optional(),
   meta_keywords: z.array(z.string()).optional(),
-  canonical_url: z.url("Must be a valid URL").max(500).optional(),
+  canonical_url: z
+    .url("Must be a valid URL")
+    .max(500)
+    .optional()
+    .or(z.literal("")),
 
   campaign_id: z.string().optional(),
 
   // Status
   status: z.enum(["draft", "published", "archived"]),
-  featured: z.boolean(),
   published_at: z.string().optional(),
 });
 

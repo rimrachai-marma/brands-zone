@@ -30,11 +30,14 @@ export async function getUserProfile(): Promise<ApiResponse<{
 }
 
 export default async function updateUser(
-  state: ActionState<{ user: User } | ErrorData> | null,
+  state: ActionState<{ user: User }, ErrorData> | null,
   data: PersonalInfoData
-): Promise<ActionState<{
-  user: User;
-}> | null> {
+): Promise<ActionState<
+  {
+    user: User;
+  },
+  ErrorData
+> | null> {
   const token = await getAuthToken();
   try {
     const response = await fetch(`${API_BASE_URL}/user/profile`, {
@@ -56,9 +59,12 @@ export default async function updateUser(
 
 export async function getUserCartData(data: {
   cart: CartItem[];
-}): Promise<ActionState<{
-  user: User;
-}> | null> {
+}): Promise<ActionState<
+  {
+    user: User;
+  },
+  ErrorData
+> | null> {
   const token = await getAuthToken();
   try {
     const response = await fetch(`${API_BASE_URL}/user/cart`, {
@@ -78,9 +84,12 @@ export async function getUserCartData(data: {
   }
 }
 
-export async function checkout(data: any): Promise<ActionState<{
-  user: User;
-}> | null> {
+export async function checkout(data: any): Promise<ActionState<
+  {
+    user: User;
+  },
+  ErrorData
+> | null> {
   const token = await getAuthToken();
   try {
     const response = await fetch(`${API_BASE_URL}/user/checkout`, {

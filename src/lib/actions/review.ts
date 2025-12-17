@@ -8,9 +8,9 @@ import { serverEnv } from "@/data/env";
 const API_BASE_URL = serverEnv.API_BASE_URL;
 
 export async function createReview(
-  state: ActionState<{ productReview: ProductReview } | ErrorData> | null,
+  state: ActionState<{ productReview: ProductReview }, ErrorData> | null,
   formData: ReviewFormData & { product_id: string }
-): Promise<ActionState<{ productReview: ProductReview } | ErrorData> | null> {
+): Promise<ActionState<{ productReview: ProductReview }, ErrorData> | null> {
   const token = await getAuthToken();
 
   try {
