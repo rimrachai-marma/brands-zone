@@ -162,10 +162,7 @@ const ProfileOverview: React.FC<Props> = ({
         reject(new Error("Upload timeout. Please try again."));
       });
 
-      xhr.open(
-        "POST",
-        `${clientEnv.NEXT_PUBLIC_API_BASE_URL}/upload/avatar-image`
-      );
+      xhr.open("POST", `${clientEnv.NEXT_PUBLIC_API_BASE_URL}/upload/logo`);
       xhr.timeout = 60000 * 2;
 
       xhr.send(formData);
@@ -323,7 +320,10 @@ const ProfileOverview: React.FC<Props> = ({
               <DialogTrigger asChild>
                 <div className="relative group/avatar h-24 w-24 rounded-full overflow-hidden cursor-pointer">
                   <Avatar className="h-24 w-24 rounded-full overflow-hidden">
-                    <AvatarImage src={vendor.logo || undefined} />
+                    <AvatarImage
+                      src={vendor.logo || undefined}
+                      className="object-contain p-2 bg-gray-100 "
+                    />
                     <AvatarFallback>
                       <Store className="h-8 w-8" />
                     </AvatarFallback>
