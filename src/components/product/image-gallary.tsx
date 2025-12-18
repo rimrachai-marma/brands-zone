@@ -46,7 +46,7 @@ const ImageGallery: React.FC<Props> = ({ images, productName }) => {
                   src={img.url}
                   alt={img.alt_text ?? productName}
                   fill
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               </AspectRatio>
             </CarouselItem>
@@ -71,7 +71,7 @@ const ImageGallery: React.FC<Props> = ({ images, productName }) => {
                 src={img.url}
                 alt={img.alt_text ?? productName}
                 fill
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             </AspectRatio>
           </Button>

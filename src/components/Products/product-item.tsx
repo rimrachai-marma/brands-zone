@@ -19,7 +19,7 @@ const ProductItem: React.FC<Props> = ({ product }) => {
           <Image
             src={product.image}
             alt=""
-            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+            className="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105"
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
             priority={true}
