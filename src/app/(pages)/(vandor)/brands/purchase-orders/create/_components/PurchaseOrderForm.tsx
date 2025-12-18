@@ -20,7 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { Save, Plus, Trash2, Info } from "lucide-react";
 import { Product } from "@/types";
 import { formatCurrency } from "@/utils/formaters";
-import { getProducts } from "@/lib/actions/products";
+import { getVendorProducts } from "@/lib/actions/products";
 import { getSuppliers } from "@/lib/actions/supplier";
 import { Supplier } from "@/types/supplier";
 import { PurchaseOrderFormData, purchaseOrderSchema } from "./_lib/schemas";
@@ -94,7 +94,7 @@ const PurchaseOrderForm: React.FC = () => {
       return;
     }
     setProductLoading(true);
-    const result = await getProducts({ keyword: query });
+    const result = await getVendorProducts({ keyword: query });
     setProductResult(result.data?.products || []);
     setProductLoading(false);
   }
@@ -371,7 +371,6 @@ const PurchaseOrderForm: React.FC = () => {
                       <div className="space-y-2">
                         <Label>Unit Cost *</Label>
                         <Controller
-                          disabled
                           name={`items.${index}.unit_cost`}
                           control={control}
                           render={({ field }) => (
@@ -383,6 +382,7 @@ const PurchaseOrderForm: React.FC = () => {
                                 type="number"
                                 min="0"
                                 step="0.01"
+                                disabled
                                 {...field}
                                 onChange={(e) => {
                                   const cost = parseFloat(e.target.value) || 0;

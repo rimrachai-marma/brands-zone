@@ -7,8 +7,14 @@ import {
 } from "@/app/(pages)/(vandor)/brands/profile/_lib/schemas";
 import { serverEnv } from "@/data/env";
 import { getAuthToken } from "@/lib/actions/auth";
-import { ActionState, ApiResponse, ErrorData } from "@/types";
-import { StatusState, Vendor, VendorRating, VendorStats } from "@/types/vendor";
+import { ActionState, ApiResponse, ErrorData, PaginationMeta } from "@/types";
+import {
+  StatusState,
+  Vendor,
+  VendorListItem,
+  VendorRating,
+  VendorStats,
+} from "@/types/vendor";
 import { log } from "console";
 import { redirect } from "next/navigation";
 
@@ -223,5 +229,43 @@ export default async function update(
   } catch (error) {
     console.log("Error updating user profile:", error);
     return null;
+  }
+}
+
+export async function getVendors(query: Record<string, string>): Promise<
+  ApiResponse<{
+    vendors: VendorListItem[];
+    pagination: PaginationMeta;
+  }>
+> {
+  const searchParams = new URLSearchParams(query).toString();
+
+  let queryString = "";
+  if (searchParams) {
+    queryString += "?" + searchParams;
+  }
+
+  try {
+    const url = `${API_BASE_URL}/vendors${queryString}`;
+    const response = await fetch(url);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: "error",
+        message: result.message || "Failed to fetch products",
+        data: null,
+      };
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      status: "error",
+      message:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      data: null,
+    };
   }
 }

@@ -28,7 +28,7 @@ import { Save, Plus, Trash2, Info } from "lucide-react";
 import { Product } from "@/types";
 
 import { formatCurrency } from "@/utils/formaters";
-import { getProducts } from "@/lib/actions/products";
+import { getVendorProducts } from "@/lib/actions/products";
 import { LoadingSwap } from "@/components/ui/loading-swap";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
@@ -112,7 +112,7 @@ const LossDamageForm: React.FC = () => {
       return;
     }
     setProductLoading(true);
-    const result = await getProducts({ keyword: query });
+    const result = await getVendorProducts({ keyword: query });
     setProductResult(result.data?.products || []);
     setProductLoading(false);
   }

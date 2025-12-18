@@ -17,7 +17,7 @@ export function NavbarList() {
 
   return (
     <NavigationMenu viewport={isMobile}>
-      <NavigationMenuList className="flex-wrap">
+      <NavigationMenuList className="flex-wrap gap-5">
         {NAVBAR_DATA.map((item) => (
           <NavigationMenuItem key={item.id}>
             {/* If item has child menu */}

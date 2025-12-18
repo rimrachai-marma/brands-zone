@@ -1,9 +1,17 @@
 import BrandsComp from "@/components/BrandsComp";
+import { getVendors } from "@/lib/actions/vendor";
 
-const page = () => {
+const page = async () => {
+  const query: Record<string, string> = {};
+  const result = await getVendors(query);
+
+  console.log(result);
+
+  if (!result.data) return null;
+
   return (
     <>
-     <BrandsComp />
+      <BrandsComp vendors={result.data?.vendors} />
     </>
   );
 };

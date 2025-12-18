@@ -60,3 +60,23 @@ export interface VendorStats {
 }
 
 export type StatusState = string;
+
+export type VendorListItem = Pick<
+  Vendor,
+  | "id"
+  | "shop_name"
+  | "slug"
+  | "logo"
+  | "banner"
+  | "description"
+  | "status"
+  | "business_address"
+  | "business_phone"
+  | "business_email"
+> & {
+  products_count: number;
+  reviews_count: number;
+  average_rating: number;
+  avg_ship_time: string | null;
+  status_state: StatusState;
+};

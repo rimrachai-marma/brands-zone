@@ -26,5 +26,5 @@ export interface Categories {
 export type CategoryMini = {
     id: string;
     name: string;
-    slug: string;
+    slug?: string;
 }

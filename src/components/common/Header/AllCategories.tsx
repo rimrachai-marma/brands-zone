@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Categories as CategoriesType } from "@/types";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -20,9 +19,10 @@ import { FaAngleDown, FaTimes } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import Categories from "./Categories";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {sidebarCategories} from "@/constant/ctgr";
 
 interface Props {
-  categories: CategoriesType;
+  categories: sidebarCategories;
 }
 
 const AllCategories = ({ categories }: Props) => {
