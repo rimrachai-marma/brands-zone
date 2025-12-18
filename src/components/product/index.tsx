@@ -2,7 +2,7 @@ import { Product } from "@/types";
 import React from "react";
 import ImageGallery from "./image-gallary";
 import ProductInfo from "./product-info";
-import Tabs from "./tabs";
+import Tabs from "./taps";
 import ProductItem from "../Products/product-item";
 import { PRODUCTS_DATA } from "@/constant/productsData";
 
@@ -14,7 +14,7 @@ const ProductDetails: React.FC<Props> = ({ product }) => {
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        <ImageGallery images={product.images} productName={product.name} />
+        <ImageGallery images={product.images} />
         <ProductInfo product={product} />
       </div>
       <div className="border rounded-lg px-6 py-8">

@@ -53,7 +53,7 @@ a {
 }
 
 a,
-button:not(:disabled) {
+button {
   cursor: pointer;
 }
 

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {UserProduct} from "@/types";
+import type { Product } from "@/types";
 
 interface WishlistState {
-  items: UserProduct[];
+  items: Product[];
 }
 
-const loadFromLocalStorage = (): UserProduct[] => {
+const loadFromLocalStorage = (): Product[] => {
   if (typeof window === "undefined") return [];
   try {
     const saved = localStorage.getItem("wishlist");
@@ -15,7 +15,7 @@ const loadFromLocalStorage = (): UserProduct[] => {
   }
 };
 
-const saveToLocalStorage = (items: UserProduct[]) => {
+const saveToLocalStorage = (items: Product[]) => {
   if (typeof window === "undefined") return;
   localStorage.setItem("wishlist", JSON.stringify(items));
 };
@@ -28,7 +28,7 @@ const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
   reducers: {
-    toggleWishlist(state, action: PayloadAction<UserProduct>) {
+    toggleWishlist(state, action: PayloadAction<Product>) {
       const exists = state.items.find((i) => i.id === action.payload.id);
       if (exists) {
         state.items = state.items.filter((i) => i.id !== action.payload.id);

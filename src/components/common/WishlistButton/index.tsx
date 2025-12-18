@@ -1,6 +1,6 @@
 "use client";
 import { useDispatch, useSelector } from "react-redux";
-import type { UserProduct} from "@/types";
+import type { Product } from "@/types";
 import { RootState } from "@/lib/store";
 import { toggleWishlist } from "@/lib/features/wishlist/wishlistSlice";
 
@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 // Import a filled heart for a better visual feedback
 import { Heart, HeartCrack } from "lucide-react"; 
 
-const WishlistButton = ({ product }: { product: UserProduct }) => {
+const WishlistButton = ({ product }: { product: Product }) => {
   const dispatch = useDispatch();
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
   const inWishlist = wishlistItems.some((item) => item.id === product.id);

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 
+import useIsMobile from "@/hooks/use-mobile";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,14 +11,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { NAVBAR_DATA } from "@/constant/navbarData";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 export function NavbarList() {
   const isMobile = useIsMobile();
 
   return (
     <NavigationMenu viewport={isMobile}>
-      <NavigationMenuList className="flex-wrap gap-5">
+      <NavigationMenuList className="flex-wrap">
         {NAVBAR_DATA.map((item) => (
           <NavigationMenuItem key={item.id}>
             {/* If item has child menu */}

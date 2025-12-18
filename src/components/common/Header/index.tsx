@@ -4,25 +4,22 @@ import AllCategories from "./AllCategories";
 import { NavbarList } from "./NavbarList";
 import AllSearchItems from "./AllSearchItems";
 import HeaderAds from "./HeaderAds";
-import HeaderAcount from "./HeaderAcount";
+import HeaderLogin from "./HeaderLogin";
 import HeaderTerms from "./HeaderTerms";
 import MobileMenu from "./MobileMenu";
 import { categories } from "@/constant/ctgr";
-import { getUserProfile } from "@/lib/actions/user";
-import { Suspense } from "react";
 
-const Header = async () => {
-  const result = await getUserProfile();
+const Header = () => {
   return (
     <header className="">
       {/* header top  */}
       <div className="bg-secondary/10 py-1">
         <div className="container-fluid mx-auto space-y-4">
           <div className="flex items-center justify-between gap-3">
+            {/* top left  */}
             <HeaderTerms />
-            <Suspense fallback={null}>
-              <HeaderAcount user={result?.data?.user} />
-            </Suspense>
+            {/* top right  */}
+            <HeaderLogin />
           </div>
         </div>
       </div>

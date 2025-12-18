@@ -1,4 +1,4 @@
-import {Product, UserProduct} from "@/types";
+import { Product } from "@/types";
 import React from "react";
 import { AspectRatio } from "../ui/aspect-ratio";
 import Link from "next/link";
@@ -9,13 +9,13 @@ import { formatCurrency } from "@/utils/formaters";
 import ProductActionButtons from "./product-action-buttons";
 
 interface Props {
-  product: UserProduct;
+  product: Product;
 }
 const ProductItem: React.FC<Props> = ({ product }) => {
   return (
     <div key={product.id} className="relative space-y-2.5 group">
       <AspectRatio className="overflow-hidden border">
-        <Link href={`/products/${product.slug}`}>
+        <Link href={`/products/${product.id}`}>
           <Image
             src={product.image}
             alt=""
@@ -25,19 +25,19 @@ const ProductItem: React.FC<Props> = ({ product }) => {
             priority={true}
           />
 
-            {(product?.count_in_stock ?? 0) < 1 && <OutOfStockOverlay />}
+          {product.countInStock < 1 && <OutOfStockOverlay />}
         </Link>
 
         {/* action buttons */}
         <ProductActionButtons product={product} />
       </AspectRatio>
 
-        {(product?.count_in_stock ?? 0) > 0 && product?.discount && (
-            <DiscountBadge
-                percentage={product.discount.percentage}
-                isCampaign={product.discount.campaign}
-            />
-        )}
+      {product.countInStock > 1 && product.discount && (
+        <DiscountBadge
+          percentage={product.discount.percentage}
+          isCampaign={product.discount.campaign}
+        />
+      )}
 
       <div className="flex flex-col gap-1">
         <Button
@@ -60,7 +60,7 @@ const ProductItem: React.FC<Props> = ({ product }) => {
           </p>
 
           <p className="text-sm text-gray-500 line-through">
-            {formatCurrency(product.original_price, "USD")}
+            {formatCurrency(3000, "USD")}
           </p>
         </div>
       </div>

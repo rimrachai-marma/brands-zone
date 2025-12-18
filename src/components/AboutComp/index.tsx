@@ -1,12 +1,12 @@
 import NewsLetter from "../common/NewsLetter";
-import About from "./About";
+import History from "./History";
 import OurTeam from "./OurTeam";
 import Vision from "./Vision";
 
 const AboutComp = () => {
   return (
     <>
-      <About />
+      <History />
       <Vision />
       <OurTeam />
       <NewsLetter />

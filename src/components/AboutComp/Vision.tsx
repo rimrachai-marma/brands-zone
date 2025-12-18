@@ -29,7 +29,7 @@ const Vision = () => {
   ];
 
   return (
-    <section className="container mx-auto py-10 px-4 md:py-24">
+    <section className="container mx-auto py-12 px-4 md:py-24">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
         {/* Left Image Column */}
         <motion.div

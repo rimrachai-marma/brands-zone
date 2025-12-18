@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { Provider } from 'react-redux'
-import { makeStore, AppStore } from '@/lib/store'
-import { Toaster } from "react-hot-toast";
+import { makeStore, AppStore } from '../lib/store'
+
 export default function StoreProvider({
   children
 }: {
@@ -10,8 +10,5 @@ export default function StoreProvider({
 }) {
   const [store] = useState<AppStore>(() => makeStore())
 
-  return <Provider store={store}>{
-      children}
-      <Toaster position="top-center" />
-  </Provider>
+  return <Provider store={store}>{children}</Provider>
 }

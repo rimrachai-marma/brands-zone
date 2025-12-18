@@ -1,17 +1,18 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Breadcrumb } from "./Breadcrumb";
+import { PageBreadcrumb } from "./PageBreadcrumb";
 
 const ClientBreadcrumb = () => {
   const pathname = usePathname();
 
+  // Hide on home page
   if (pathname === "/") return null;
 
   return (
     <section className="py-3 bg-secondary/10">
       <div className="container mx-auto">
-        <Breadcrumb />
+        <PageBreadcrumb />
       </div>
     </section>
   );

@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {Categories as CategoriesType, Category} from "@/types";
+import { Categories as CategoriesType, Category2 } from "@/types";
 import { ChevronLeft, ChevronRight, FolderOpen } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
-import {sidebarCategories} from "@/constant/ctgr";
 
 interface Props {
   categories: CategoriesType;
@@ -21,10 +20,8 @@ const Categories: React.FC<Props> = ({ categories }) => {
   const findCategoryById = (
     categories: CategoriesType,
     id: string
-  ): sidebarCategories | null => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-      for (const cat of categories) {
+  ): Category2 | null => {
+    for (const cat of categories) {
       if (cat.id === id) return cat;
       if (cat.children) {
         const found = findCategoryById(cat.children, id);
@@ -34,7 +31,7 @@ const Categories: React.FC<Props> = ({ categories }) => {
     return null;
   };
 
-  const getCurrentCategories = (): Category[] |any => {
+  const getCurrentCategories = (): CategoriesType => {
     const currentId = navigationStack[currentLevel];
     if (!currentId) return categories;
 
@@ -101,7 +98,7 @@ const Categories: React.FC<Props> = ({ categories }) => {
     category,
     index,
   }: {
-    category: sidebarCategories;
+    category: Category2;
     index: number;
   }) => {
     const hasChildren = category.children && category.children.length > 0;
