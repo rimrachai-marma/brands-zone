@@ -1,13 +1,13 @@
 "use client";
-import { FilterCategory } from "@/types";
+import {CategoryMini} from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { Button } from "../ui/button";
+import React from "react";
 
 const CategorySidebar: React.FC<{
-  categories: FilterCategory[];
+  categories: CategoryMini[];
   activeCategory: string | null;
-  setActiveCategory: (key: string | null) => void;
+  setActiveCategory: (slug: string | null) => void;
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
 }> = ({
@@ -17,51 +17,30 @@ const CategorySidebar: React.FC<{
   isMobileOpen,
   setIsMobileOpen,
 }) => {
-  const handleCategoryClick = (key: string | null) => {
-    setActiveCategory(key);
+  const handleCategoryClick = (slug: string | null) => {
+    setActiveCategory(slug);
     setIsMobileOpen(false);
   };
 
   const SidebarContent = (
     <div className="p-6 ">
       <ul className="space-y-1">
-        <motion.li
-          key="all"
-          className="relative border-b border-b-primary hover:text-primary cursor-pointer"
-          onClick={() => handleCategoryClick(null)}
-          whileHover={{ x: 5 }}
-        >
-          {activeCategory === null && (
-            <motion.div
-              layoutId="category-indicator"
-              className="absolute inset-y-0 left-0 w-1 bg-primary"
-            />
-          )}
-          <div
-            className={`py-2 pl-4 text-base font-medium ${
-              activeCategory === null ? "text-primary" : ""
-            }`}
-          >
-            All Products
-          </div>
-        </motion.li>
-
         {categories.map((category) => (
           <motion.li
-            key={category.key}
-            className="relative border-b border-b-primary/50 hover:text-primary  cursor-pointer transition-colors"
-            onClick={() => handleCategoryClick(category.key)}
+            key={category.slug}
+            className="relative border-b border-b-primary/50 hover:text-primary first:border-t first:border-t-primary/50 cursor-pointer transition-colors"
+            onClick={() => handleCategoryClick(category.slug)}
             whileHover={{ x: 5 }}
           >
-            {activeCategory === category.key && (
+            {activeCategory === category.slug && (
               <motion.div
                 layoutId="category-indicator"
-                className="absolute inset-y-0 left-0 w-1  bg-primary"
+                className="absolute inset-y-0 left-0 w-1 bg-primary"
               />
             )}
             <div
               className={`py-2 pl-4 text-base font-medium ${
-                activeCategory === category.key ? "text-primary" : ""
+                activeCategory === category.slug ? "text-primary" : ""
               }`}
             >
               {category.name}
@@ -75,7 +54,7 @@ const CategorySidebar: React.FC<{
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block lg:w-full col-span-3 sticky top-0 h-screen overflow-y-auto">
+      <div className="hidden lg:block lg:w-full col-span-3 sticky top-0 overflow-y-auto">
         {SidebarContent}
       </div>
 

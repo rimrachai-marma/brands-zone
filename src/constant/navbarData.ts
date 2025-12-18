@@ -8,7 +8,13 @@ export const NAVBAR_DATA: NavbarItem[] = [
   },
   {
     id: 2,
-    title: "Pages",
+    title: "Brands",
+    url: "/brands-list",
+    trend: true,
+  },
+  {
+    id: 3,
+    title: "Explore",
     child: [
       {
         id: 1,
@@ -20,22 +26,36 @@ export const NAVBAR_DATA: NavbarItem[] = [
         title: "Contact Us",
         url: "/contact-us",
       },
+      {
+        id: 3,
+        title: "Terms & Conditions",
+        url: "/terms-conditions",
+      },
+      {
+        id: 4,
+        title: "Privacy Policy",
+        url: "/privacy-policy",
+      },
+      {
+        id: 5,
+        title: "Services",
+        url: "/services-support",
+      },
+      {
+        id: 5,
+        title: "Support",
+        url: "/support",
+      },
     ],
   },
   {
-    id: 3,
-    title: "Products",
-    url: "/products",
-  },
-  {
     id: 4,
-    title: "Blog",
-    url: "/blog",
+    title: "Products",
+    url: "/search",
   },
   {
     id: 5,
-    title: "Brands",
-    url: "/brands",
-    trend: true,
+    title: "Blog",
+    url: "/blog",
   },
 ];

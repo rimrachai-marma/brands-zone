@@ -7,19 +7,7 @@ import {
   SelectValue,
 } from "../ui/select";
 
-export interface FilterSingleBrandProps {
-  searchTerm: string;
-  sortOrder: "asc" | "desc";
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  setSortOrder: React.Dispatch<React.SetStateAction<"asc" | "desc">>;
-}
-
-const FilterSingleBrand = ({
-  searchTerm,
-  sortOrder,
-  setSearchTerm,
-  setSortOrder,
-}: FilterSingleBrandProps) => {
+const FilterSingleBrand = ({}) => {
   return (
     <>
       {/* Search and Filter */}
@@ -36,8 +24,6 @@ const FilterSingleBrand = ({
             id="search"
             type="search"
             placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
           />
         </div>
@@ -50,10 +36,7 @@ const FilterSingleBrand = ({
           >
             Sort
           </label>
-          <Select
-            value={sortOrder}
-            onValueChange={(val: "asc" | "desc") => setSortOrder(val)}
-          >
+          <Select>
             <SelectTrigger id="sort" className="w-40">
               <SelectValue placeholder="Select order" />
             </SelectTrigger>

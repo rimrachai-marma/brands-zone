@@ -1,25 +1,27 @@
-export interface Brands {
-  id: number;
+import { PaginationMeta } from ".";
+
+export interface Brand {
+  id: string;
   name: string;
-  location: string;
-  mobile: string;
-  logo: string;
-  image:string
-  category: string;
+  slug: string;
+  description?: string;
+  logo?: string;
+  website?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  products_count?: number;
 }
 
-export interface BrandGridProps {
-  brands: Brands[];
+export interface BrandStatistics {
+  total_products: number;
+  active_products: number;
+  draft_products: number;
+  archived_products: number;
+  total_variants: number;
 }
 
-export interface BrandFilterProps {
-  sortOrder: "asc" | "desc";
-  onSortChange: (val: "asc" | "desc") => void;
-  selectedCategory: string | null;
-  onCategoryChange: (val: string | null) => void;
-}
-
-export interface BrandSearchProps {
-  value: string;
-  onChange: (val: string) => void;
+export interface Brands {
+  brands: Brand[];
+  pagination: PaginationMeta;
 }

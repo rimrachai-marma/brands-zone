@@ -1,5 +1,5 @@
 "use client";
-import { Menu, ChevronsUpDown } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -10,18 +10,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import Link from "next/link";
 import MainLogo from "./MainLogo";
-import { Categories as CategoriesType } from "@/types";
 import Categories from "./Categories";
+import {sidebarCategories} from "@/constant/ctgr";
 
 interface Props {
-  categories: CategoriesType;
+  categories: sidebarCategories;
 }
 const MobileMenu = ({ categories }: Props) => {
   return (
@@ -59,35 +54,14 @@ const MobileMenu = ({ categories }: Props) => {
                   <Link href="/">Home</Link>
                 </Button>
 
-                <Collapsible>
-                  <CollapsibleTrigger className="flex w-full items-center justify-between rounded px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors">
-                    <span>Pages</span>
-                    <ChevronsUpDown className="h-4 w-4" />
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="space-y-1 mt-1">
-                    <Button
-                      asChild
-                      variant="ghost"
-                      className="w-full justify-start pl-8 rounded"
-                    >
-                      <Link href="/about">About us</Link>
-                    </Button>
-                    <Button
-                      asChild
-                      variant="ghost"
-                      className="w-full justify-start pl-8 rounded"
-                    >
-                      <Link href="/contact">Contact Us</Link>
-                    </Button>
-                  </CollapsibleContent>
-                </Collapsible>
+
 
                 <Button
                   asChild
                   variant="ghost"
                   className="w-full justify-start rounded"
                 >
-                  <Link href="/products">Products</Link>
+                  <Link href="/search">Products</Link>
                 </Button>
 
                 <Button

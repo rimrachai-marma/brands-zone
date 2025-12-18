@@ -1,78 +1,79 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { Product } from "@/types";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-interface CartItem extends Product {
-  quantity: number;
+export interface CartItem {
+    quantity: number;
+    id: string;
+    variantId: string;
 }
 
 interface CartState {
-  items: CartItem[];
+    items: CartItem[];
 }
 
 const loadFromLocalStorage = (): CartItem[] => {
-  if (typeof window === "undefined") return [];
-  try {
-    const saved = localStorage.getItem("cart");
-    return saved ? JSON.parse(saved) : [];
-  } catch {
-    return [];
-  }
+    if (typeof window === "undefined") return [];
+    try {
+        const saved = localStorage.getItem("cart");
+        return saved ? JSON.parse(saved) : [];
+    } catch {
+        return [];
+    }
 };
 
 const saveToLocalStorage = (items: CartItem[]) => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("cart", JSON.stringify(items));
+    if (typeof window === "undefined") return;
+    localStorage.setItem("cart", JSON.stringify(items));
 };
 
 const initialState: CartState = {
-  items: loadFromLocalStorage(),
+    items: loadFromLocalStorage(),
 };
 
 const cartSlice = createSlice({
-  name: "cart",
-  initialState,
-  reducers: {
-    addToCart(
-      state,
-      action: PayloadAction<{ product: Product; quantity?: number }>
-    ) {
-      const { product, quantity = 1 } = action.payload;
+    name: "cart",
+    initialState,
+    reducers: {
+        addToCart(
+            state,
+            action: PayloadAction<{ id: string; quantity?: number, variantId: string }>
+        ) {
+            const {id, variantId, quantity = 1} = action.payload;
 
-      const existingItem = state.items.find((item) => item.id === product.id);
+            const existingItem = state.items.find((item) => item.id == id && item.variantId == variantId);
 
-      if (existingItem) {
-        existingItem.quantity = existingItem.quantity + quantity;
-      } else {
-        state.items.push({ ...product, quantity });
-      }
+            if (existingItem) {
+                existingItem.quantity = existingItem.quantity + quantity;
+            } else {
+                state.items.push({id, quantity, variantId});
+            }
 
-      saveToLocalStorage(state.items);
+            saveToLocalStorage(state.items);
+        },
+
+        removeFromCart(state, action: PayloadAction<string>) {
+            state.items = state.items.filter((item) => item.id != action.payload);
+            saveToLocalStorage(state.items);
+        },
+
+        decreaseQuantity(state, action: PayloadAction<string>) {
+            const item = state.items.find((i) => i.id == action.payload);
+            if (item) {
+                if (item.quantity > 1) {
+                    item.quantity -= 1;
+                } else {
+                    state.items = state.items.filter((i) => i.id !== action.payload);
+                }
+            }
+            saveToLocalStorage(state.items);
+        },
+
+        clearCart(state) {
+            state.items = [];
+            saveToLocalStorage([]);
+        },
     },
-
-    removeFromCart(state, action: PayloadAction<number>) {
-      state.items = state.items.filter((item) => item.id !== action.payload);
-      saveToLocalStorage(state.items);
-    },
-
-    decreaseQuantity(state, action: PayloadAction<number>) {
-      const item = state.items.find((i) => i.id === action.payload);
-      if (item) {
-        if (item.quantity > 1) {
-          item.quantity -= 1;
-        } else {
-          state.items = state.items.filter((i) => i.id !== action.payload);
-        }
-      }
-      saveToLocalStorage(state.items);
-    },
-
-    clearCart(state) {
-      state.items = [];
-      saveToLocalStorage([]);
-    },
-  },
 });
 
-export const { addToCart, removeFromCart, decreaseQuantity, clearCart } =
-  cartSlice.actions;
+export const {addToCart, removeFromCart, decreaseQuantity, clearCart} =
+    cartSlice.actions;
 export default cartSlice.reducer;

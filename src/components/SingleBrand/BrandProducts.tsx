@@ -2,16 +2,16 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Product } from "@/types";
+import { PublicVendor } from "@/types";
 import Link from "next/link";
+import { PRODUCTS_DATA } from "@/constant/productsData";
 
-interface BrandProductsProps {
-  products: Product[];
-  brandName: string;
+interface Props {
+  brand: PublicVendor;
 }
 
-const BrandProducts = ({ products, brandName }: BrandProductsProps) => {
-  if (products.length === 0) {
+const BrandProducts = ({ brand }: Props) => {
+  if (PRODUCTS_DATA.length === 0) {
     return (
       <motion.div
         className="text-center text-gray-500 border  p-10"
@@ -23,7 +23,7 @@ const BrandProducts = ({ products, brandName }: BrandProductsProps) => {
       </motion.div>
     );
   }
- 
+
   return (
     <motion.div
       className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
@@ -34,7 +34,7 @@ const BrandProducts = ({ products, brandName }: BrandProductsProps) => {
         visible: { transition: { staggerChildren: 0.1 } },
       }}
     >
-      {products.map((p, idx) => (
+      {PRODUCTS_DATA.map((p, idx) => (
         <Link href={`/products/${p.id}`} key={p.id}>
           <motion.div
             key={idx}

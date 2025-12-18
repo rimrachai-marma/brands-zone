@@ -1,68 +1,9 @@
-import { Product } from "@/types";
+// import { Product } from "@/types";
 
-export const FILTER_PRODUCTS: Product[] = [
-  {
-    id: 1,
-    title: "Pioneer Full Sleeve Tee",
-    category: "mens-clothing",
-    price: 29.99,
-    image: "/images/products/placeholder-1.svg",
-    rating: 4.5,
-  },
-  {
-    id: 2,
-    title: "JBL Evolve DC Speaker",
-    category: "electronics",
-    price: 149.5,
-    image: "/images/products/placeholder-2.svg",
-    rating: 4.5,
-  },
-  {
-    id: 3,
-    title: "Minimalist Smartwatch",
-    category: "accessories",
-    price: 89.99,
-    image: "/images/products/placeholder-3.svg",
-    rating: 4.5,
-  },
-  {
-    id: 4,
-    title: "Solid Color Short Polo",
-    category: "mens-clothing",
-    price: 34.0,
-    image: "/images/products/placeholder-4.svg",
-    rating: 4.5,
-  },
-  {
-    id: 5,
-    title: "4K QLED Television",
-    category: "electronics",
-    price: 999.0,
-    image: "/images/products/placeholder-5.svg",
-    rating: 4.5,
-  },
-  {
-    id: 6,
-    title: "Handcrafted Wooden Lamp",
-    category: "home-goods",
-    price: 55.75,
-    image: "/images/products/placeholder-6.svg",
-    rating: 4.5,
-  },
-  {
-    id: 7,
-    title: "Black Solid Full Hoodie",
-    category: "mens-clothing",
-    price: 59.99,
-    image: "/images/products/placeholder-7.svg",
-    rating: 4.5,
-  },
-  {
-    id: 8,
-    title: "Advanced Drone",
-    category: "toys",
-    price: 299.99,
-    image: "/images/products/placeholder-8.svg",
-    rating: 4.5,
-  },
-];
+<<<<<<< HEAD
+export const FILTER_PRODUCTS: Product[] = [];
+=======
+// export const FILTER_PRODUCTS: Product[] = [
+
+// ];
+>>>>>>> 9af07295f6b89640a6c3cd2a0e1808b82735dbe8

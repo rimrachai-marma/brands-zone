@@ -14,9 +14,10 @@ import { ProductImage } from "@/types";
 
 interface Props {
   images: ProductImage[];
+  productName: string;
 }
 
-const ImageGallery: React.FC<Props> = ({ images }) => {
+const ImageGallery: React.FC<Props> = ({ images, productName }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
 
@@ -43,7 +44,7 @@ const ImageGallery: React.FC<Props> = ({ images }) => {
               <AspectRatio>
                 <Image
                   src={img.url}
-                  alt={img.alt}
+                  alt={img.alt_text ?? productName}
                   fill
                   className="h-full w-full object-cover"
                 />
@@ -53,7 +54,7 @@ const ImageGallery: React.FC<Props> = ({ images }) => {
         </CarouselContent>
       </Carousel>
 
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-4 gap-0.5">
         {images?.map((img, index) => (
           <Button
             onClick={() => scrollTo(index)}
@@ -68,7 +69,7 @@ const ImageGallery: React.FC<Props> = ({ images }) => {
             >
               <Image
                 src={img.url}
-                alt={img.alt}
+                alt={img.alt_text ?? productName}
                 fill
                 className="h-full w-full object-cover"
               />
