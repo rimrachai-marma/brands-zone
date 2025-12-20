@@ -20,14 +20,14 @@ const ProductDetails: React.FC<Props> = ({ product }) => {
       <div className="border rounded-lg px-6 py-8">
         <Tabs product={product} />
       </div>
-      <div className="space-y-4">
+      {/* <div className="space-y-4">
         <h2 className="font-semibold text-xl">Related products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {PRODUCTS_DATA.map((product) => (
             <ProductItem product={product} key={product.id} />
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

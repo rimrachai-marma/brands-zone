@@ -5,9 +5,9 @@ import Link from "next/link";
 import AnimatedGlassOverlay from "../ui/AnimatedGlassOverlay";
 
 const staticImages = [
-  { url: "/products/hot-deal-1", src: "/images/banner/banner-3.avif" },
-  { url: "/products/hot-deal-2", src: "/images/banner/banner-2.avif" },
-  { url: "/products/hot-deal-3", src: "/images/banner/banner-1.avif" },
+  { url: "/products/hot-deal-1", src: "/images/Hero/img10.png" },
+  { url: "/products/hot-deal-2", src: "/images/Hero/img4.PNG" },
+  { url: "/products/hot-deal-3", src: "/images/Hero/img5.PNG" },
 ];
 
 const FeatureProducts = () => {
@@ -15,7 +15,7 @@ const FeatureProducts = () => {
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {staticImages.map((prod, idx) => (
         <motion.div
-          className=""
+          className="border border-gray-200"
           key={idx}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

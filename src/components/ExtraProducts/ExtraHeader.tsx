@@ -4,7 +4,7 @@ const ExtraHeader = () => {
   return (
     <div className="flex items-center justify-between">
       <h4 className="text-xl capitalize font-semibold">
-        Gadget Makes Your Life Easy
+          Where Comfort Meets Style.
       </h4>
       <Link
         href="/"

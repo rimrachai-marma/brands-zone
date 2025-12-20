@@ -6,16 +6,16 @@ import "swiper/css";
 import { motion } from "framer-motion";
 
 const brandLogos = [
-  "/images/brands/brand-1.png",
+  // "/images/brands/brand-1.png",
   "/images/brands/brand-2.png",
   "/images/brands/brand-3.png",
-  "/images/brands/brand-1.png",
+  // "/images/brands/brand-1.png",
   "/images/brands/brand-2.png",
   "/images/brands/brand-3.png",
-  "/images/brands/brand-1.png",
+  // "/images/brands/brand-1.png",
   "/images/brands/brand-2.png",
   "/images/brands/brand-3.png",
-  "/images/brands/brand-1.png",
+  // "/images/brands/brand-1.png",
   "/images/brands/brand-2.png",
   "/images/brands/brand-3.png",
 ];

@@ -273,12 +273,12 @@ const ProductInfo: React.FC<Props> = ({ product }) => {
                           style={{ backgroundColor: option.metadata.hex }}
                         />
                         <span className="text-sm font-medium text-gray-700">
-                          {option.label}3
+                          {option.label}
                         </span>
                       </>
                     ) : (
                       <span className="text-sm font-medium text-gray-700">
-                        {option.label}2
+                        {option.label}
                       </span>
                     )}
                   </button>

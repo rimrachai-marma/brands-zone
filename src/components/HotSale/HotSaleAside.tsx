@@ -6,15 +6,15 @@ const HotSaleAside = () => {
     <aside className="space-y-6">
       <div className="relative overflow-hidden shadow-md border border-primary/20 p-12 hover:shadow-xl transition-shadow duration-300">
         <Image
-          className="absolute top-0 right-0"
-          src="/images/products/products-five.png"
+          className="absolute top-1/3 right-0"
+          src="/images/Hero/img6.png"
           width={150}
           height={50}
           alt="hot_product"
         />
         <p className="text-primary text-sm">Basic Gift idea</p>
         <h6 className="my-5 text-lg max-w-60 font-semibold">
-          Mini Two Wheel Self Balancing Scooter
+            Feel the Difference with Every Step.
         </h6>
         <Link
           href="/pruducts/1"
@@ -25,15 +25,15 @@ const HotSaleAside = () => {
       </div>
       <div className="relative overflow-hidden shadow-md border border-primary/20 p-12 hover:shadow-xl transition-shadow duration-300">
         <Image
-          className="absolute  top-0 right-0"
-          src="/images/products/products-six.png"
+          className="absolute top-1/3 right-0"
+          src="/images/Hero/img7.png"
           width={150}
           height={50}
           alt="hot_product"
         />
         <p className="text-primary text-sm">Basic Gift idea</p>
         <h6 className="my-5 text-lg max-w-60 font-semibold">
-          Mini Two Wheel Self Balancing Scooter
+            Your Journey Starts with the Right Shoes.
         </h6>
         <Link
           href="/pruducts/1"
