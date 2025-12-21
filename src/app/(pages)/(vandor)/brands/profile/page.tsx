@@ -1,4 +1,3 @@
-import StatusAlert from "./_components/status-alert";
 import ProfileOverview from "./_components/profile-overview";
 import Tabs from "./_components/tabs";
 import { getVendorProfile } from "@/lib/actions/vendor";
@@ -38,7 +37,7 @@ export default async function VendorProfilePage() {
             user={userResult?.data?.user}
             vendor={vendorResult?.data?.vendor}
             vendorRating={vendorResult.data.rating}
-            VendorStats={vendorResult.data.stats}
+            vendorStats={vendorResult.data.stats}
             statusState={vendorResult.data.status_state}
           />
         </div>
@@ -55,6 +54,8 @@ export default async function VendorProfilePage() {
         <Tabs
           vendor={vendorResult?.data?.vendor}
           user={userResult?.data?.user}
+          vendorRating={vendorResult.data.rating}
+          vendorStats={vendorResult.data.stats}
         />
       </div>
 

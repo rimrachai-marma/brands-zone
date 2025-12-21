@@ -12,15 +12,17 @@ import ShopInformation from "./ShopInformation";
 import BusinessInformation from "./BusinessInformation";
 import BankingInformation from "./BankingInformation";
 import SecurityInformation from "./SecurityInformation";
-import { Vendor } from "@/types/vendor";
+import { Vendor, VendorRating, VendorStats } from "@/types/vendor";
 import { User } from "@/types";
 
 interface Props {
   vendor: Vendor;
+  vendorRating: VendorRating;
+  vendorStats: VendorStats;
   user: User;
 }
 
-const Tabs: React.FC<Props> = ({ vendor, user }) => {
+const Tabs: React.FC<Props> = ({ vendor, user, vendorRating, vendorStats }) => {
   return (
     <ShadcnTabs defaultValue="personal" className="space-y-6">
       <TabsList className="grid w-full grid-cols-5">
@@ -51,7 +53,11 @@ const Tabs: React.FC<Props> = ({ vendor, user }) => {
       </TabsContent>
 
       <TabsContent value="shop">
-        <ShopInformation vendor={vendor} />
+        <ShopInformation
+          vendor={vendor}
+          vendorRating={vendorRating}
+          vendorStats={vendorStats}
+        />
       </TabsContent>
 
       <TabsContent value="business">

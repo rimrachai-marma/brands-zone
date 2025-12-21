@@ -77,8 +77,10 @@ export function AdminSidebar() {
         { icon: Users, label: "Customers", href: "/admin/customers" },
         { icon: Tag, label: "Categories", href: "/admin/categories" },
         { icon: TrendingUp, label: "Brands", href: "/admin/brands" },
+          { icon: MessageSquare, label: "Hero Section", href: "/admin/hero" },
       ],
     },
+
     {
       title: "System",
       items: [

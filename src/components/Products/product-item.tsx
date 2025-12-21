@@ -1,4 +1,4 @@
-import {Product, UserProduct} from "@/types";
+import { Product, UserProduct } from "@/types";
 import React from "react";
 import { AspectRatio } from "../ui/aspect-ratio";
 import Link from "next/link";
@@ -19,24 +19,25 @@ const ProductItem: React.FC<Props> = ({ product }) => {
           <Image
             src={product.image}
             alt=""
-            className="!object-contain w-full h-full transition-transform duration-300 group-hover:scale-105"
+            className="object-contain! w-full h-full transition-transform duration-300 group-hover:scale-105"
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
             priority={true}
           />
 
-            {(product?.count_in_stock ?? 0) < 1 && <OutOfStockOverlay />}
+          {(product?.count_in_stock ?? 0) < 1 && <OutOfStockOverlay />}
         </Link>
 
         {/* action buttons */}
         <ProductActionButtons product={product} />
       </AspectRatio>
 
-        {(product?.count_in_stock ?? 0) > 0 && product?.discount.percentage>0 && (
-            <DiscountBadge
-                percentage={product.discount.percentage}
-                isCampaign={product.discount.campaign}
-            />
+      {(product?.count_in_stock ?? 0) > 0 &&
+        product?.discount.percentage > 0 && (
+          <DiscountBadge
+            percentage={product.discount.percentage}
+            isCampaign={product.discount.campaign}
+          />
         )}
 
       <div className="flex flex-col gap-1">

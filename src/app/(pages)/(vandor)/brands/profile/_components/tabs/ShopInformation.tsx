@@ -8,18 +8,20 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Vendor } from "@/types/vendor";
-import { formatCurrency } from "@/utils/formaters";
+import { Vendor, VendorRating, VendorStats } from "@/types/vendor";
 import {
   CreditCard,
   Globe,
   Mail,
   MapPin,
+  Package,
   Phone,
   Save,
   Star,
   Store,
+  ThumbsUp,
   TrendingUp,
+  Truck,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { ShopInfoData, shopInfoSchema } from "../../_lib/schemas";
@@ -39,9 +41,15 @@ import toast from "react-hot-toast";
 
 interface Props {
   vendor: Vendor;
+  vendorRating: VendorRating;
+  vendorStats: VendorStats;
 }
 
-const ShopInformation: React.FC<Props> = ({ vendor }) => {
+const ShopInformation: React.FC<Props> = ({
+  vendor,
+  vendorStats,
+  vendorRating,
+}) => {
   const [state, formAction, isPending] = useActionState(update, null);
 
   const form = useForm<ShopInfoData>({
@@ -227,28 +235,75 @@ const ShopInformation: React.FC<Props> = ({ vendor }) => {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
+            {/* Average Rating + Total Reviews */}
             <div className="bg-slate-50 p-4 rounded-lg border">
               <div className="flex items-center gap-2 text-slate-600 mb-2">
                 <Star className="h-4 w-4" />
                 <span className="text-sm font-medium">Average Rating</span>
               </div>
-              <p className="text-2xl font-bold text-slate-900">4.7 / 5.0</p>
+
+              <div className="flex items-end gap-2">
+                <p className="text-2xl font-bold text-slate-900">
+                  {vendorRating.average}
+                </p>
+                <span className="text-sm text-slate-500">
+                  / 5.0 · {vendorRating.total_reviews} reviews
+                </span>
+              </div>
             </div>
+
+            {/* Positive Feedback */}
+            <div className="bg-slate-50 p-4 rounded-lg border">
+              <div className="flex items-center gap-2 text-slate-600 mb-2">
+                <ThumbsUp className="h-4 w-4" />
+                <span className="text-sm font-medium">Positive Feedback</span>
+              </div>
+              <p className="text-2xl font-bold text-green-600">
+                {vendorRating.positive_percentage}%
+              </p>
+            </div>
+
+            {/* Total Sales */}
             <div className="bg-slate-50 p-4 rounded-lg border">
               <div className="flex items-center gap-2 text-slate-600 mb-2">
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-sm font-medium">Total Sales</span>
               </div>
-              <p className="text-2xl font-bold text-slate-900">1,050</p>
+              <p className="text-2xl font-bold text-slate-900">
+                {vendorStats.products_sold}
+              </p>
             </div>
+
+            {/* Products */}
+            <div className="bg-slate-50 p-4 rounded-lg border">
+              <div className="flex items-center gap-2 text-slate-600 mb-2">
+                <Package className="h-4 w-4" />
+                <span className="text-sm font-medium">Products</span>
+              </div>
+              <p className="text-2xl font-bold text-green-600">
+                {vendorStats.products_count}
+              </p>
+            </div>
+
+            {/* Avg Shipping Time */}
+            <div className="bg-slate-50 p-4 rounded-lg border">
+              <div className="flex items-center gap-2 text-slate-600 mb-2">
+                <Truck className="h-4 w-4" />
+                <span className="text-sm font-medium">Avg Shipping Time</span>
+              </div>
+              <p className="text-2xl font-bold text-slate-900">
+                {vendorStats.avg_ship_time ?? "N/A"}
+              </p>
+            </div>
+
+            {/* Total Revenue */}
             <div className="bg-slate-50 p-4 rounded-lg border">
               <div className="flex items-center gap-2 text-slate-600 mb-2">
                 <CreditCard className="h-4 w-4" />
                 <span className="text-sm font-medium">Total Revenue</span>
               </div>
-              <p className="text-2xl font-bold text-green-600">
-                {formatCurrency(50000, "USD")}
-              </p>
+              <p className="text-2xl font-bold text-green-600">N/A</p>
+              <span className="text-sm text-slate-500">Not implimented</span>
             </div>
           </div>
         </CardContent>

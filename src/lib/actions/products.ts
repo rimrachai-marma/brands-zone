@@ -2,11 +2,11 @@
 
 import { ProductFormData } from "@/schema/products/create";
 import {
-  ActionState,
-  ApiResponse,
-  ErrorData,
-  PaginationMeta,
-  Product,
+    ActionState,
+    ApiResponse,
+    ErrorData,
+    PaginationMeta,
+    Product, UserProduct,
 } from "@/types";
 import { getAuthToken } from "./auth";
 import { serverEnv } from "@/data/env";
@@ -36,6 +36,34 @@ export async function getProducts(query: Record<string, string>): Promise<
       return {
         status: "error",
         message: result.message || "Failed to fetch products",
+        data: null,
+      };
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      status: "error",
+      message:
+        error instanceof Error ? error.message : "An unexpected error occurred",
+      data: null,
+    };
+  }
+}
+
+export async function getRelatedProducts(id: string): Promise<
+  ApiResponse<UserProduct[]>
+> {
+  try {
+    const url = `${API_BASE_URL}/user/${id}/related`;
+    const response = await fetch(url);
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: "error",
+        message: result.message || "Failed to fetch related products",
         data: null,
       };
     }

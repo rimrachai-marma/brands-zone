@@ -111,10 +111,11 @@ export async function getUserTopCategoryProducts({
 }
 
 
-export async function getUserRandomProducts({limit, is_random, is_new}: {
+export async function getUserRandomProducts({limit, is_random, is_new,brand_id}: {
     limit?: string | null;
     is_random?: boolean | null;
-    is_new: boolean | null
+    is_new: boolean | null;
+    brand_id?: string | undefined;
 }):
     Promise<ApiResponse<UserProduct[]>> {
     try {
@@ -130,6 +131,10 @@ export async function getUserRandomProducts({limit, is_random, is_new}: {
 
         if (is_new) {
             params.append("is_new", String(is_new));
+        }
+
+        if (brand_id) {
+            params.append("brand_id", brand_id);
         }
 
         const url = `${API_BASE_URL}/user/random/products?${params.toString()}`;

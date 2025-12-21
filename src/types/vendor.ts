@@ -73,10 +73,4 @@ export type PublicVendor = Pick<
   | "business_address"
   | "business_phone"
   | "business_email"
-> & {
-  products_count: number;
-  reviews_count: number;
-  average_rating: number;
-  avg_ship_time: string | null;
-  status_state: StatusState;
-};
+>;

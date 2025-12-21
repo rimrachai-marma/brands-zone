@@ -10,7 +10,7 @@ export default async function page({
 }) {
   const id = (await params).id;
 
-  const [result, products] = await Promise.all([getVendorProfileById(id), []]);
+  const [result] = await Promise.all([getVendorProfileById(id), []]);
 
   if (!result.data) {
     return (
@@ -27,12 +27,12 @@ export default async function page({
       <div className="container mx-auto">
         <div className="space-y-8">
           <BrandDetails
-            brand={vendor}
-            rating={rating}
-            stats={stats}
-            status_state={status_state}
+            vendor={vendor}
+            vendorRating={rating}
+            vendorStats={stats}
+            statusState={status_state}
           />
-          <FilterSingleBrand />
+          {/*<FilterSingleBrand />*/}
           <BrandProducts brand={vendor} />
         </div>
       </div>

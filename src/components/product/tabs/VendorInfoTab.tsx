@@ -29,8 +29,11 @@ const VendorInfoTab: React.FC<Props> = async ({ vendorId }) => {
       {/* Header with Logo and Rating */}
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center justify-between pb-4 border-b">
         <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={vendor.logo ?? undefined} />
+          <Avatar className="h-16 w-16 border rounded-2xl">
+            <AvatarImage
+              className="object-contain"
+              src={vendor.logo ?? undefined}
+            />
             <AvatarFallback>
               {vendor.shop_name
                 ?.split(" ")
@@ -174,7 +177,7 @@ const VendorInfoTab: React.FC<Props> = async ({ vendorId }) => {
         </div>
         <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-100">
           <p className="text-3xl font-bold text-purple-600">
-            {stats.avg_ship_time}
+            {stats.avg_ship_time ?? "N/A"}
           </p>
           <p className="text-sm text-gray-600 mt-1">Avg. Ship Time</p>
         </div>

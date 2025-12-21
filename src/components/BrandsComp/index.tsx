@@ -2,11 +2,15 @@
 import { motion } from "framer-motion";
 
 import BrandGrid from "@/components/BrandsComp/BrandGrid";
-import { PublicVendor } from "@/types";
+import { PublicVendor, StatusState, VendorRating, VendorStats } from "@/types";
 import React from "react";
 
 interface Props {
-  vendors: PublicVendor[];
+  vendors: (PublicVendor & {
+    rating: VendorRating;
+    stats: Omit<VendorStats, "years_in_business" | "verified_since">;
+    status_state: StatusState;
+  })[];
 }
 
 const BrandsComp: React.FC<Props> = ({ vendors }) => {

@@ -50,7 +50,7 @@ interface Props {
   user: User;
   vendor: Vendor;
   vendorRating: VendorRating;
-  VendorStats: VendorStats;
+  vendorStats: VendorStats;
   statusState: StatusState;
 }
 
@@ -69,7 +69,7 @@ const ProfileOverview: React.FC<Props> = ({
   user,
   vendor,
   vendorRating,
-  VendorStats,
+  vendorStats,
   statusState,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -520,7 +520,7 @@ const ProfileOverview: React.FC<Props> = ({
               <div className="flex items-center gap-1">
                 <TrendingUp className="h-4 w-4 text-green-600" />
                 <span className="font-semibold">
-                  {VendorStats.products_sold}
+                  {vendorStats.products_sold}
                 </span>
                 <span className="text-sm text-slate-500">sales</span>
               </div>

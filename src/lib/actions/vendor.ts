@@ -9,9 +9,9 @@ import { serverEnv } from "@/data/env";
 import { getAuthToken } from "@/lib/actions/auth";
 import { ActionState, ApiResponse, ErrorData, PaginationMeta } from "@/types";
 import {
+  PublicVendor,
   StatusState,
   Vendor,
-  VendorListItem,
   VendorRating,
   VendorStats,
 } from "@/types/vendor";
@@ -234,7 +234,11 @@ export default async function update(
 
 export async function getVendors(query: Record<string, string>): Promise<
   ApiResponse<{
-    vendors: VendorListItem[];
+    vendors: (PublicVendor & {
+      rating: VendorRating;
+      stats: Omit<VendorStats, "years_in_business" | "verified_since">;
+      status_state: StatusState;
+    })[];
     pagination: PaginationMeta;
   }>
 > {

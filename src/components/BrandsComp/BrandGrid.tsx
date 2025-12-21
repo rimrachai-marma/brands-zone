@@ -2,10 +2,18 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { PublicVendor } from "@/types";
+import { PublicVendor, StatusState, VendorRating, VendorStats } from "@/types";
 import { Store } from "lucide-react";
 
-const BrandGrid = ({ vendors }: { vendors: PublicVendor[] }) => {
+interface Props {
+  vendors: (PublicVendor & {
+    rating: VendorRating;
+    stats: Omit<VendorStats, "years_in_business" | "verified_since">;
+    status_state: StatusState;
+  })[];
+}
+
+const BrandGrid: React.FC<Props> = ({ vendors }) => {
   return (
     <motion.div
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"
@@ -75,9 +83,7 @@ const BrandGrid = ({ vendors }: { vendors: PublicVendor[] }) => {
               <div className="grid grid-cols-3 gap-4 mb-6 pb-6 border-b border-neutral-200">
                 <div>
                   <div className="text-2xl font-light text-neutral-900 tracking-tight">
-                    {vendor.average_rating > 0
-                      ? vendor.average_rating.toFixed(1)
-                      : "—"}
+                    {vendor.rating.average > 0 ? vendor.rating.average : "—"}
                   </div>
                   <div className="text-[10px] text-neutral-500 uppercase tracking-wider mt-1">
                     Rating
@@ -86,16 +92,16 @@ const BrandGrid = ({ vendors }: { vendors: PublicVendor[] }) => {
 
                 <div>
                   <div className="text-2xl font-light text-neutral-900 tracking-tight">
-                    {vendor.products_count}
+                    {vendor.stats.products_sold}
                   </div>
                   <div className="text-[10px] text-neutral-500 uppercase tracking-wider mt-1">
-                    Products
+                    Products Sold
                   </div>
                 </div>
 
                 <div>
                   <div className="text-2xl font-light text-neutral-900 tracking-tight">
-                    {vendor.avg_ship_time || "—"}
+                    {vendor.stats.avg_ship_time || "—"}
                   </div>
                   <div className="text-[10px] text-neutral-500 uppercase tracking-wider mt-1">
                     Ship Time
@@ -127,16 +133,14 @@ const BrandGrid = ({ vendors }: { vendors: PublicVendor[] }) => {
                   </div>
                 )}
 
-                {vendor.reviews_count > 0 && (
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-neutral-400 uppercase tracking-wider">
-                      Reviews
-                    </span>
-                    <span className="text-neutral-700 font-mono">
-                      {vendor.reviews_count}
-                    </span>
-                  </div>
-                )}
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-neutral-400 uppercase tracking-wider">
+                    Reviews
+                  </span>
+                  <span className="text-neutral-700 font-mono">
+                    {vendor.rating.total_reviews}
+                  </span>
+                </div>
               </div>
             </div>
           </motion.div>
