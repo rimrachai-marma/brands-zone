@@ -1,422 +1,169 @@
-"use server";
+// lib/api/category.ts
+import {ApiResponse, Categories, Category, CategoryTree} from "@/types";
 
-import { ApiResponse, Categories } from "@/types";
-import {serverEnv} from "@/data/env";
-// import { revalidatePath, revalidateTag } from "next/cache";
-// import { cookies } from "next/headers";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// Action state types for form handling
-
-// Configuration
-const API_BASE_URL = serverEnv.API_BASE_URL;
+interface GetCategoriesParams {
+  page?: number;
+  per_page?: number;
+  root_only?: boolean;
+  with_children?: boolean;
+  with_parent?: boolean;
+  with_products_count?: boolean;
+  keyword?: string;
+  sort?: 'name' | 'created_at' | 'updated_at';
+  order?: 'asc' | 'desc';
+}
 
 export async function getCategories(
-  query: Record<string, string>
+    params: GetCategoriesParams = {}
 ): Promise<ApiResponse<Categories>> {
-  const searchParams = new URLSearchParams(query).toString();
+  const queryParams = new URLSearchParams();
 
-  let queryString = "";
-  if (searchParams) {
-    queryString += "?" + searchParams;
-  }
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) {
+      queryParams.append(key, value.toString());
+    }
+  });
 
   try {
-    const url = `${API_BASE_URL}/categories${queryString}`;
-    const response = await fetch(url);
-
-    const result = await response.json();
+    const response = await fetch(`${API_BASE_URL}/categories?${queryParams}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
 
     if (!response.ok) {
-      return {
-        status: "error",
-        message: result.message || "Failed to fetch categories",
-        data: null,
-      };
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    return result;
+    return await response.json();
   } catch (error) {
-    return {
-      status: "error",
-      message:
-        error instanceof Error ? error.message : "An unexpected error occurred",
-      data: null,
-    };
+    console.error('Error fetching categories:', error);
+    throw error;
   }
 }
 
-// /**
-//  * Get a single category by ID
-//  */
-// export async function getCategory(
-//   id: number,
-//   options?: {
-//     with_children?: boolean;
-//     with_parent?: boolean;
-//     with_products?: boolean;
-//   }
-// ): Promise<ApiResponse<{ category: Category }>> {
-//   try {
-//     const searchParams = new URLSearchParams();
+export async function getCategoryBySlug(
+    slug: string,
+    options?: {
+      with_children?: boolean;
+      with_parent?: boolean;
+      with_products?: boolean;
+    }
+): Promise<ApiResponse<{ category: Category }>> {
+  const queryParams = new URLSearchParams();
 
-//     if (options?.with_children) {
-//       searchParams.append("with_children", "1");
-//     }
-//     if (options?.with_parent) {
-//       searchParams.append("with_parent", "1");
-//     }
-//     if (options?.with_products) {
-//       searchParams.append("with_products", "1");
-//     }
+  Object.entries(options || {}).forEach(([key, value]) => {
+    queryParams.append(key, value.toString());
+  });
 
-//     const url = `${API_BASE_URL}/categories/${id}${
-//       searchParams.toString() ? `?${searchParams.toString()}` : ""
-//     }`;
+  const response = await fetch(
+      `${API_BASE_URL}/categories/${slug}?${queryParams}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      }
+  );
 
-//     const response = await fetch(url, {
-//       method: "GET",
-//       headers: await buildHeaders(),
-//       next: { tags: ["categories", `category-${id}`] },
-//     });
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
 
-//     const result = await response.json();
+  return response.json();
+}
 
-//     if (!response.ok) {
-//       return {
-//         status: "error",
-//         message: result.message || "Failed to fetch category",
-//         data: null,
-//       };
-//     }
+export async function createCategory(
+    data: Omit<Category, 'id' | 'created_at' | 'updated_at'>
+): Promise<ApiResponse<{ category: Category }>> {
+  const response = await fetch(`${API_BASE_URL}/categories`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(data),
+  });
 
-//     return result;
-//   } catch (error) {
-//     return handleApiError(error);
-//   }
-// }
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to create category');
+  }
 
-// /**
-//  * Get category tree (hierarchical structure)
-//  */
-// export async function getCategoryTree(): Promise<
-//   ApiResponse<{ categories_tree: Category[] }>
-// > {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/categories/type/tree`, {
-//       method: "GET",
-//       headers: await buildHeaders(),
-//       next: { tags: ["category-tree"] },
-//     });
+  return response.json();
+}
 
-//     const result = await response.json();
+export async function updateCategory(
+    slug: string,
+    data: Partial<Omit<Category, 'id' | 'slug' | 'created_at' | 'updated_at'>>
+): Promise<ApiResponse<{ updated_category: Category }>> {
+  const response = await fetch(`${API_BASE_URL}/categories/${slug}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(data),
+  });
 
-//     if (!response.ok) {
-//       return {
-//         status: "error",
-//         message: result.message || "Failed to fetch category tree",
-//         data: null,
-//       };
-//     }
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to update category');
+  }
 
-//     return result;
-//   } catch (error) {
-//     return handleApiError(error);
-//   }
-// }
+  return response.json();
+}
 
-// /**
-//  * Create a new category (requires authentication)
-//  */
-// export async function createCategory(formData: {
-//   name: string;
-//   slug: string;
-//   description?: string;
-//   image?: string;
-//   parent_id?: number | null;
-//   is_active?: boolean;
-// }): Promise<ActionState<{ category: Category }>> {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/categories`, {
-//       method: "POST",
-//       headers: await buildHeaders(true),
-//       body: JSON.stringify(formData),
-//     });
+export async function deleteCategory(
+    slug: string
+): Promise<ApiResponse<{ deletedCategory: Category }>> {
+  const response = await fetch(`${API_BASE_URL}/categories/${slug}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
 
-//     const result = await response.json();
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to delete category');
+  }
 
-//     if (!response.ok) {
-//       // Handle authentication errors
-//       if (response.status === 401) {
-//         return {
-//           status: "error",
-//           message: result.message || "Unauthenticated",
-//         };
-//       }
+  return response.json();
+}
 
-//       // Handle authorization errors
-//       if (response.status === 403) {
-//         return {
-//           status: "error",
-//           message: result.message || "Forbidden",
-//         };
-//       }
+export async function toggleCategoryStatus(
+    slug: string
+): Promise<ApiResponse<{ category: Category }>> {
+  const response = await fetch(`${API_BASE_URL}/categories/${slug}/toggle-status`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
 
-//       // Handle validation errors
-//       if (response.status === 422) {
-//         return {
-//           status: "error",
-//           message: result.message || "Validation failed",
-//           errors: parseValidationErrors(result),
-//         };
-//       }
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to toggle status');
+  }
 
-//       return {
-//         status: "error",
-//         message: result.message || "Failed to create category",
-//       };
-//     }
+  return response.json();
+}
 
-//     // Revalidate categories and tree
-//     revalidateTag("categories");
-//     revalidateTag("category-tree");
-//     revalidatePath("/categories");
+export async function getCategoryTree(): Promise<ApiResponse<CategoryTree>> {
+  const response = await fetch(`${API_BASE_URL}/categories/tree`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
 
-//     return {
-//       status: "success",
-//       message: result.message,
-//       data: result.data,
-//     };
-//   } catch (error) {
-//     return {
-//       status: "error",
-//       message:
-//         error instanceof Error ? error.message : "An unexpected error occurred",
-//     };
-//   }
-// }
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
 
-// /**
-//  * Update an existing category (requires authentication)
-//  */
-// export async function updateCategory(
-//   id: number,
-//   formData: {
-//     name?: string;
-//     slug?: string;
-//     description?: string;
-//     image?: string;
-//     parent_id?: number | null;
-//     is_active?: boolean;
-//   }
-// ): Promise<ActionState<{ updated_category: Category }>> {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
-//       method: "PUT",
-//       headers: await buildHeaders(true),
-//       body: JSON.stringify(formData),
-//     });
-
-//     const result = await response.json();
-
-//     if (!response.ok) {
-//       // Handle not found
-//       if (response.status === 404) {
-//         return {
-//           status: "error",
-//           message: result.message || "Category not found",
-//         };
-//       }
-
-//       // Handle authentication errors
-//       if (response.status === 401) {
-//         return {
-//           status: "error",
-//           message: result.message || "Unauthenticated",
-//         };
-//       }
-
-//       // Handle authorization errors
-//       if (response.status === 403) {
-//         return {
-//           status: "error",
-//           message: result.message || "Forbidden",
-//         };
-//       }
-
-//       // Handle validation errors
-//       if (response.status === 422) {
-//         return {
-//           status: "error",
-//           message: result.message || "Validation failed",
-//           errors: parseValidationErrors(result),
-//         };
-//       }
-
-//       return {
-//         status: "error",
-//         message: result.message || "Failed to update category",
-//       };
-//     }
-
-//     // Revalidate specific category, list, and tree
-//     revalidateTag("categories");
-//     revalidateTag(`category-${id}`);
-//     revalidateTag("category-tree");
-//     revalidatePath("/categories");
-//     revalidatePath(`/categories/${id}`);
-
-//     return {
-//       status: "success",
-//       message: result.message,
-//       data: result.data,
-//     };
-//   } catch (error) {
-//     return {
-//       status: "error",
-//       message:
-//         error instanceof Error ? error.message : "An unexpected error occurred",
-//     };
-//   }
-// }
-
-// /**
-//  * Delete a category (requires authentication)
-//  */
-// export async function deleteCategory(
-//   id: number
-// ): Promise<ActionState<{ deletedCategory: Category }>> {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/categories/${id}`, {
-//       method: "DELETE",
-//       headers: await buildHeaders(true),
-//     });
-
-//     const result = await response.json();
-
-//     if (!response.ok) {
-//       // Handle not found
-//       if (response.status === 404) {
-//         return {
-//           status: "error",
-//           message: result.message || "Category not found",
-//         };
-//       }
-
-//       // Handle authentication errors
-//       if (response.status === 401) {
-//         return {
-//           status: "error",
-//           message: result.message || "Unauthenticated",
-//         };
-//       }
-
-//       // Handle authorization errors
-//       if (response.status === 403) {
-//         return {
-//           status: "error",
-//           message: result.message || "Forbidden",
-//         };
-//       }
-
-//       // Handle business logic errors (has children or products)
-//       if (response.status === 400) {
-//         return {
-//           status: "error",
-//           message: result.message || "Cannot delete category",
-//         };
-//       }
-
-//       return {
-//         status: "error",
-//         message: result.message || "Failed to delete category",
-//       };
-//     }
-
-//     // Revalidate categories and tree
-//     revalidateTag("categories");
-//     revalidateTag(`category-${id}`);
-//     revalidateTag("category-tree");
-//     revalidatePath("/categories");
-
-//     return {
-//       status: "success",
-//       message: result.message,
-//       data: result.data,
-//     };
-//   } catch (error) {
-//     return {
-//       status: "error",
-//       message:
-//         error instanceof Error ? error.message : "An unexpected error occurred",
-//     };
-//   }
-// }
-
-// /**
-//  * Toggle category active status (requires authentication)
-//  */
-// export async function toggleCategoryStatus(
-//   id: number
-// ): Promise<ActionState<{ category: Category }>> {
-//   try {
-//     const response = await fetch(
-//       `${API_BASE_URL}/categories/${id}/toggle-status`,
-//       {
-//         method: "PATCH",
-//         headers: await buildHeaders(true),
-//       }
-//     );
-
-//     const result = await response.json();
-
-//     if (!response.ok) {
-//       // Handle not found
-//       if (response.status === 404) {
-//         return {
-//           status: "error",
-//           message: result.message || "Category not found",
-//         };
-//       }
-
-//       // Handle authentication errors
-//       if (response.status === 401) {
-//         return {
-//           status: "error",
-//           message: result.message || "Unauthenticated",
-//         };
-//       }
-
-//       // Handle authorization errors
-//       if (response.status === 403) {
-//         return {
-//           status: "error",
-//           message: result.message || "Forbidden",
-//         };
-//       }
-
-//       return {
-//         status: "error",
-//         message: result.message || "Failed to toggle category status",
-//       };
-//     }
-
-//     // Revalidate specific category, list, and tree
-//     revalidateTag("categories");
-//     revalidateTag(`category-${id}`);
-//     revalidateTag("category-tree");
-//     revalidatePath("/categories");
-//     revalidatePath(`/categories/${id}`);
-
-//     return {
-//       status: "success",
-//       message: result.message,
-//       data: result.data,
-//     };
-//   } catch (error) {
-//     return {
-//       status: "error",
-//       message:
-//         error instanceof Error ? error.message : "An unexpected error occurred",
-//     };
-//   }
-// }
+  return response.json();
+}

@@ -27,20 +27,15 @@ export async function getHeroSections(
     if (sort) queryParams.append("sort", sort);
 
     try {
-        const token = await getAuthToken();
-        const url = `${API_BASE_URL}/admin/hero-section/?${queryParams}`;
+        const url = `${API_BASE_URL}/user/hero-section?${queryParams}`;
 
         const response = await fetch(url, {
             headers: {
-                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
             cache: "no-store",
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
 
         return await response.json();
     } catch (error) {
@@ -96,9 +91,9 @@ export async function createHeroSection(
             body: formData,
         });
 
-        const data = await response.json(); // একবার read
 
-        return data;
+         // একবার read
+        return await response.json();
     } catch (error) {
         console.error("Error creating hero section:", error);
         return {

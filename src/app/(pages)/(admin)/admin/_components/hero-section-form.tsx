@@ -155,13 +155,13 @@ export default function HeroSectionForm({initialData}: HeroSectionFormProps) {
                 }
             });
 
-
+let res;
             if (initialData) {
                 await updateHeroSection(initialData.id, formData);
             } else {
-                await createHeroSection(formData);
+               res= await createHeroSection(formData);
             }
-
+            console.log(res)
             toast.success(
                 initialData
                     ? "Hero section updated successfully"

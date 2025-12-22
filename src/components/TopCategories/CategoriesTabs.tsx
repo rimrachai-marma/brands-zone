@@ -88,9 +88,9 @@ const CategoriesTabs = () => {
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-10 w-64" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-6">
                     {[...Array(4)].map((_, i) => (
-                        <Skeleton key={i} className="h-40 w-full" />
+                        <Skeleton key={i} className="h-96 w-full" />
                     ))}
                 </div>
             </div>
@@ -127,7 +127,7 @@ const CategoriesTabs = () => {
                             <TabsTrigger
                                 key={category.id}
                                 value={category.slug}
-                                className="data-[state=active]:bg-primary data-[state=active]:text-white !rounded-none"
+                                className="data-[state=active]:bg-primary data-[state=active]:text-white rounded-none!"
                             >
                                 {category.name}
                             </TabsTrigger>
@@ -138,7 +138,7 @@ const CategoriesTabs = () => {
                 {categories.map(category => (
                     <TabsContent key={category.id} value={category.slug}>
                         {loading.products ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                 {[...Array(8)].map((_, i) => (
                                     <Skeleton key={i} className="h-48 w-full" />
                                 ))}

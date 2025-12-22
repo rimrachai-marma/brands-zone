@@ -28,3 +28,8 @@ export type CategoryMini = {
     name: string;
     slug?: string;
 }
+
+
+export interface CategoryTree {
+  categories_tree: Category[];
+}

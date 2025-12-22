@@ -4,7 +4,7 @@ import ExtraProductsItems from "./ExtraProductsItems";
 
 const ExtraProducts = () => {
   return (
-    <section className="py-24 relative">
+    <section className="py-44 relative">
       <div className="absolute top-0 left-0 right-0 bottom-0">
         <Image
           className="opacity-50"
@@ -13,13 +13,9 @@ const ExtraProducts = () => {
           alt="background"
         />
       </div>
-      <div className="container-fluid mx-auto relative z-20">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 lg:col-span-10 space-y-12">
+      <div className="container-fluid mx-auto relative z-20 space-y-10">
             <ExtraHeader />
             <ExtraProductsItems />
-          </div>
-        </div>
       </div>
     </section>
   );
