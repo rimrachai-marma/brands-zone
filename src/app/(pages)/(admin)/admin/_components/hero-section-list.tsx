@@ -1,7 +1,7 @@
 // components/hero-section/hero-section-list.tsx
 "use client";
 
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,17 +12,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, Edit, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
+import { Edit, Trash2, ToggleLeft, ToggleRight, Search } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { toggleHeroSectionStatus, deleteHeroSection,getHeroSections } from "@/lib/actions/hero-section";
+import { toggleHeroSectionStatus, deleteHeroSection, getHeroSections } from "@/lib/actions/hero-section";
 import { HeroSection } from "@/types/hero-section";
 import { toast } from "sonner";
 import {
@@ -35,6 +30,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import SkeletonRow from "@/components/Hero/Skeleton";
+import {Switch} from "@/components/ui/switch";
 
 export default function HeroSectionList() {
     const [heroSections, setHeroSections] = useState<HeroSection[]>([]);
@@ -43,7 +40,7 @@ export default function HeroSectionList() {
     const [pagination, setPagination] = useState({
         page: 1,
         pages: 1,
-        per_page: 5,
+        per_page: 10,
         total: 0,
     });
     const [deleteDialog, setDeleteDialog] = useState<{
@@ -52,7 +49,7 @@ export default function HeroSectionList() {
         title: string;
     }>({ open: false, id: null, title: "" });
 
-    const fetchHeroSections = (async (page = 1) => {
+    const fetchHeroSections = async (page = 1) => {
         try {
             setLoading(true);
             const response = await getHeroSections({
@@ -74,19 +71,17 @@ export default function HeroSectionList() {
         } finally {
             setLoading(false);
         }
-    });
+    };
 
     useEffect(() => {
         fetchHeroSections();
-    }, [ search]);
+    }, [search]);
 
     const handleToggleStatus = async (id: number) => {
         try {
-             await toggleHeroSectionStatus(id);
-
-                toast.success("Status updated successfully");
-                fetchHeroSections(pagination.page);
-
+            await toggleHeroSectionStatus(id);
+            toast.success("Status updated successfully");
+            fetchHeroSections(pagination.page);
         } catch (error) {
             toast.error("Failed to update status");
         }
@@ -96,12 +91,10 @@ export default function HeroSectionList() {
         if (!deleteDialog.id) return;
 
         try {
-           await deleteHeroSection(deleteDialog.id);
-
-                toast.success("Hero section deleted successfully");
-                setDeleteDialog({ open: false, id: null, title: "" });
-                fetchHeroSections(pagination.page);
-
+            await deleteHeroSection(deleteDialog.id);
+            toast.success("Hero section deleted successfully");
+            setDeleteDialog({ open: false, id: null, title: "" });
+            fetchHeroSections(pagination.page);
         } catch (error) {
             toast.error("Failed to delete hero section");
         }
@@ -111,180 +104,239 @@ export default function HeroSectionList() {
         setDeleteDialog({ open: true, id, title });
     };
 
+
     return (
-        <div className="space-y-4">
-            <div className="flex justify-between items-center">
-                <div className="flex items-center gap-4">
+        <div className="space-y-6">
+            {/* Header Section */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold tracking-tight">Hero Sections</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Manage hero sections for your website
+                    </p>
+                </div>
+
+            </div>
+
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                        placeholder="Search hero sections..."
+                        placeholder="Search by title or subtitle"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="max-w-sm bg-white"
+                        className="pl-9 bg-white"
                     />
                 </div>
                 <Button asChild>
-                    <Link href="/admin/hero/create">Create New</Link>
+                    <Link href="/admin/hero/create" className="whitespace-nowrap">
+                        + Create New
+                    </Link>
                 </Button>
             </div>
 
-            <div className="border bg-white">
-                <Table>
-                    <TableHeader >
-                        <TableRow >
-                            <TableHead>Images</TableHead>
-                            <TableHead>Title</TableHead>
-                            <TableHead>Subtitle</TableHead>
-                            <TableHead>CTA</TableHead>
-                            <TableHead>CTA Link</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {loading ? (
+            {/* Table Container */}
+            <div className="border rounded-lg bg-white shadow-sm">
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
                             <TableRow>
-                                <TableCell colSpan={6} className="text-center py-8">
-                                    Loading...
-                                </TableCell>
+                                <TableHead className="w-[180px]">Images</TableHead>
+                                <TableHead>Title</TableHead>
+                                <TableHead className="min-w-[200px]">Subtitle</TableHead>
+                                <TableHead>CTA</TableHead>
+                                <TableHead>CTA Link</TableHead>
+                                <TableHead className="w-[100px]">Status</TableHead>
+                                <TableHead className="w-[150px] text-right">Actions</TableHead>
                             </TableRow>
-                        ) : heroSections.length === 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={6} className="text-center py-8">
-                                    No hero sections found
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            heroSections.map((section) => (
-                                <TableRow key={section.id}>
-                                    <TableCell>
-                                        <div className="flex gap-2">
-                                            {section.full_image_1 && (
-                                                <div className="relative w-12 h-12 border border-gray-200">
-                                                    <Image
-                                                        src={section.full_image_1}
-                                                        alt={section.title}
-                                                        fill
-                                                        className="object-cover rounded"
-                                                    />
-                                                </div>
-                                            )}
-                                            {section.full_image_2 && (
-                                                <div className="relative w-12 h-12 border border-gray-200">
-                                                    <Image
-                                                        src={section.full_image_2}
-                                                        alt={section.title}
-                                                        fill
-                                                        className="object-cover rounded"
-                                                    />
-                                                </div>
-                                            )}
-                                            {section.full_image_3 && (
-                                                <div className="relative w-12 h-12 border border-gray-200">
-                                                    <Image
-                                                        src={section.full_image_3}
-                                                        alt={section.title}
-                                                        fill
-                                                        className="object-cover rounded"
-                                                    />
-                                                </div>
+                        </TableHeader>
+                        <TableBody>
+                            {loading ? (
+                                // Loading Skeleton
+                                Array.from({ length: 5 }).map((_, index) => (
+                                    <SkeletonRow key={index} />
+                                ))
+                            ) : heroSections.length === 0 ? (
+                                // Empty State
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center py-12">
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="text-muted-foreground">
+                                                No hero sections found
+                                            </div>
+                                            {search && (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setSearch("")}
+                                                >
+                                                    Clear search
+                                                </Button>
                                             )}
                                         </div>
                                     </TableCell>
-                                    <TableCell className="font-medium">{section.title}</TableCell>
-                                    <TableCell className="text-sm text-muted-foreground truncate max-w-xs">
-                                        {section.subtitle}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-muted-foreground truncate max-w-xs">
-                                        {section.cta_text}
-                                    </TableCell>
-                                    <TableCell className="text-sm text-muted-foreground truncate max-w-xs">
-                                        {section.cta_link}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant={section.is_active ? "default" : "secondary"}>
-                                            {section.is_active ? "Active" : "Inactive"}
-                                        </Badge>
-                                    </TableCell>
-                                    <TableCell>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem asChild>
-                                                    {/*<Link href={`/admin/hero-sections/${section.id}`}>*/}
-                                                    {/*    <Eye className="mr-2 h-4 w-4" />*/}
-                                                    {/*    View*/}
-                                                    {/*</Link>*/}
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem asChild>
-                                                    <Link href={`/admin/hero/${section.id}/edit`}>
-                                                        <Edit className="mr-2 h-4 w-4" />
-                                                        Edit
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => handleToggleStatus(section.id)}>
-                                                    {section.is_active ? (
-                                                        <ToggleLeft className="mr-2 h-4 w-4" />
-                                                    ) : (
-                                                        <ToggleRight className="mr-2 h-4 w-4" />
-                                                    )}
-                                                    {section.is_active ? "Deactivate" : "Activate"}
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    className="text-destructive"
-                                                    onClick={() => confirmDelete(section.id, section.title)}
-                                                >
-                                                    <Trash2 className="mr-2 h-4 w-4" />
-                                                    Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
                                 </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
+                            ) : (
+                                // Data Rows
+                                heroSections.map((section) => (
+                                    <TableRow key={section.id} className="group hover:bg-muted/50">
+                                        <TableCell>
+                                            <div className="flex gap-2">
+                                                {section.full_image_1 && (
+                                                    <div className="relative w-12 h-12 border border-muted rounded overflow-hidden">
+                                                        <Image
+                                                            src={section.full_image_1}
+                                                            alt={section.title}
+                                                            fill
+                                                            sizes="48px"
+                                                            className="object-cover"
+                                                        />
+                                                    </div>
+                                                )}
+                                                {section.full_image_2 && (
+                                                    <div className="relative w-12 h-12 border border-muted rounded overflow-hidden">
+                                                        <Image
+                                                            src={section.full_image_2}
+                                                            alt={section.title}
+                                                            fill
+                                                            sizes="48px"
+                                                            className="object-cover"
+                                                        />
+                                                    </div>
+                                                )}
+                                                {section.full_image_3 && (
+                                                    <div className="relative w-12 h-12 border border-muted rounded overflow-hidden">
+                                                        <Image
+                                                            src={section.full_image_3}
+                                                            alt={section.title}
+                                                            fill
+                                                            sizes="48px"
+                                                            className="object-cover"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            <div className="truncate max-w-[150px]">
+                                                {section.title}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="truncate max-w-[250px] text-sm text-muted-foreground">
+                                                {section.subtitle}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="truncate max-w-[120px]">
+                                                {section.cta_text}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="truncate max-w-[150px] text-sm text-muted-foreground">
+                                                {section.cta_link}
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant={section.is_active ? "default" : "secondary"}
+                                                className={`
+                                                    ${section.is_active
+                                                    ? "bg-green-100 text-green-800 hover:bg-green-100"
+                                                    : "bg-gray-100 text-gray-800 hover:bg-gray-100"
+                                                }
+                                                `}
+                                            >
+                                                {section.is_active ? "Active" : "Inactive"}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    asChild
+                                                    className="h-8 w-8"
+                                                >
+                                                    <Link href={`/admin/hero/${section.id}/edit`}>
+                                                        <Edit className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleToggleStatus(section.id)}
+                                                    className="h-8 w-8"
+                                                    title={section.is_active ? "Deactivate" : "Activate"}
+                                                >
+                                                    <Switch checked={section.is_active} id="airplane-mode" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => confirmDelete(section.id, section.title)}
+                                                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
             </div>
 
-            <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                    Showing {heroSections.length} of {pagination.total} hero sections
+            {/* Pagination */}
+            {(heroSections.length > 0 || loading) && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-sm text-muted-foreground">
+                        Showing {heroSections.length} of {pagination.total} hero sections
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => fetchHeroSections(pagination.page - 1)}
+                            disabled={pagination.page <= 1 || loading}
+                        >
+                            Previous
+                        </Button>
+                        <div className="text-sm font-medium">
+                            Page {pagination.page} of {pagination.pages}
+                        </div>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => fetchHeroSections(pagination.page + 1)}
+                            disabled={pagination.page >= pagination.pages || loading}
+                        >
+                            Next
+                        </Button>
+                    </div>
                 </div>
-                <div className="flex gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fetchHeroSections(pagination.page - 1)}
-                        disabled={pagination.page <= 1}
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fetchHeroSections(pagination.page + 1)}
-                        disabled={pagination.page >= pagination.pages}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
+            )}
 
+            {/* Delete Confirmation Dialog */}
             <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ ...deleteDialog, open })}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogTitle>Delete Hero Section</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the hero section "{deleteDialog.title}".
+                            Are you sure you want to delete <strong>{deleteDialog.title}</strong>?
+                            This action cannot be undone and will permanently remove this hero section.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+                        <AlertDialogAction
+                            onClick={handleDelete}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
                             Delete
                         </AlertDialogAction>
                     </AlertDialogFooter>

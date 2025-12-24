@@ -5,6 +5,8 @@ import TopCategories from "@/components/TopCategories";
 import HotSale from "@/components/HotSale";
 import ExtraProducts from "@/components/ExtraProducts";
 import Collection from "@/components/Collection";
+import Testimonials from "@/components/Testimonials/Testimonials";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -15,6 +17,9 @@ export default function Home() {
       <HotSale />
       <ExtraProducts />
       <Collection />
+      <Suspense fallback={null}>
+        <Testimonials />
+      </Suspense>
       <BrandLogo />
     </>
   );

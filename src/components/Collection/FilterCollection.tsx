@@ -80,7 +80,7 @@ const FilterCollection = () => {
     };
 
     return (
-        <div className="py-16 bg-white">
+        <div className="py-5 bg-white">
             <div className="container-fluid mx-auto px-4">
                 {/* Header */}
                 <div className="mb-8">

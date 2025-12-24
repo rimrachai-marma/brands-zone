@@ -1,14 +1,14 @@
 // components/category/CategoryList.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CategoryFilterData, CategoryFilterInput, categoryFilterSchema } from '@/schema/category';
-import { getCategories } from '@/lib/actions/categories';
-import { Category } from '@/types/category';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import {useState, useEffect} from 'react';
+import {useForm} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {CategoryFilterData, CategoryFilterInput, categoryFilterSchema} from '@/schema/category';
+import {deleteCategory, getCategories} from '@/lib/actions/admin/category';
+import {Category} from '@/types/category';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
 import {
     Select,
     SelectContent,
@@ -30,73 +30,40 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { MoreHorizontal, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Search } from 'lucide-react';
-
-// Skeleton Loading Rows Component
-function CategoryTableSkeleton({ rows = 5 }: { rows?: number }) {
-    return (
-        <>
-            {Array.from({ length: rows }).map((_, index) => (
-                <TableRow key={index}>
-                    <TableCell>
-                        <Skeleton className="h-6 w-32" />
-                    </TableCell>
-                    <TableCell>
-                        <Skeleton className="h-6 w-24" />
-                    </TableCell>
-                    <TableCell>
-                        <Skeleton className="h-6 w-20" />
-                    </TableCell>
-                    <TableCell>
-                        <Skeleton className="h-6 w-16" />
-                    </TableCell>
-                    <TableCell>
-                        <Skeleton className="h-6 w-20" />
-                    </TableCell>
-                    <TableCell>
-                        <Skeleton className="h-8 w-8 rounded-full" />
-                    </TableCell>
-                </TableRow>
-            ))}
-        </>
-    );
-}
-
-// Skeleton for filter controls
-function FilterSkeleton() {
-    return (
-        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-            <div className="flex-1">
-                <Skeleton className="h-10 w-64" />
-            </div>
-            <div className="flex gap-2">
-                <Skeleton className="h-10 w-[180px]" />
-                <Skeleton className="h-10 w-[180px]" />
-                <Skeleton className="h-10 w-[180px]" />
-            </div>
-        </div>
-    );
-}
-
-// Skeleton for pagination
-function PaginationSkeleton() {
-    return (
-        <div className="flex items-center justify-between">
-            <Skeleton className="h-5 w-40" />
-            <div className="flex gap-2">
-                <Skeleton className="h-9 w-20" />
-                <Skeleton className="h-9 w-24" />
-                <Skeleton className="h-9 w-20" />
-            </div>
-        </div>
-    );
-}
+import {Badge} from '@/components/ui/badge';
+import {Card} from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {MoreHorizontal, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Search, Plus} from 'lucide-react';
+import Image from "next/image";
+import {TableSkeleton} from "@/app/(pages)/(admin)/admin/_components/category/Skeleton";
+import {CategoryForm} from "./CategoryForm";
+import { toast } from "sonner";
 
 export function CategoryList() {
     const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
     const [pagination, setPagination] = useState({
         page: 1,
         pages: 1,
@@ -112,9 +79,10 @@ export function CategoryList() {
         resolver: zodResolver(categoryFilterSchema),
         defaultValues: {
             page: 1,
-            per_page: 12,
+            per_page: 10,
             sort: 'name',
             order: 'asc',
+            with_parent:true
         },
     });
 
@@ -124,10 +92,11 @@ export function CategoryList() {
 
         try {
             const response = await getCategories(filters);
-
             if (response.status === 'success' && response.data) {
-                setCategories(response.data.categories ?? []);
-                setPagination(response.data.pagination);
+                setCategories(response.data);
+                setPagination(response.pagination);
+
+
             } else {
                 setCategories([]);
             }
@@ -149,16 +118,16 @@ export function CategoryList() {
 
         const timeout = setTimeout(() => {
             form.setValue('keyword', value);
-            form.setValue('page', 1); // Reset to first page when searching
+            form.setValue('page', 1);
         }, 500);
 
         setSearchTimeout(timeout);
     };
 
     // Handle filter changes
-    const handleFilterChange = (key: keyof CategoryFilterInput, value: any) => {
+    const handleFilterChange = (key: keyof CategoryFilterInput, value: string) => {
         form.setValue(key, value);
-        form.setValue('page', 1); // Reset to first page on filter change
+        form.setValue('page', 1);
     };
 
     useEffect(() => {
@@ -185,32 +154,47 @@ export function CategoryList() {
         form.setValue('page', page);
     };
 
-    const renderContent = () => {
-        if (loading) {
-            return (
-                <>
-                    <FilterSkeleton />
-                    <div className="border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Slug</TableHead>
-                                    <TableHead>Parent</TableHead>
-                                    <TableHead>Products</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                <CategoryTableSkeleton rows={pagination.per_page} />
-                            </TableBody>
-                        </Table>
-                    </div>
-                    <PaginationSkeleton />
-                </>
-            );
+    const handleEditClick = (category: Category) => {
+        setSelectedCategory(category);
+        setIsEditModalOpen(true);
+    };
+
+    const handleDeleteClick = (category: Category) => {
+        setCategoryToDelete(category);
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!categoryToDelete) return;
+
+        try {
+await deleteCategory(categoryToDelete.slug)
+
+
+            toast.success(`Category "${categoryToDelete.name}" deleted successfully`);
+            setDeleteDialogOpen(false);
+            setCategoryToDelete(null);
+
+            // Refresh categories list
+            const currentFilters = categoryFilterSchema.parse(form.getValues());
+            fetchCategories(currentFilters);
+        } catch (error) {
+            toast.error("Failed to delete category");
         }
+    };
+
+    const handleFormSuccess = () => {
+        setIsCreateModalOpen(false);
+        setIsEditModalOpen(false);
+        setSelectedCategory(null);
+
+        // Refresh categories list
+        const currentFilters = categoryFilterSchema.parse(form.getValues());
+        fetchCategories(currentFilters);
+    };
+
+    const renderContent = () => {
+        if (loading) return <TableSkeleton/>
 
         if (error) {
             return (
@@ -232,7 +216,7 @@ export function CategoryList() {
             return (
                 <div className="p-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-4">
-                        <Search className="h-6 w-6" />
+                        <Search className="h-6 w-6"/>
                     </div>
                     <h3 className="text-lg font-semibold mb-2">No categories found</h3>
                     <p className="text-muted-foreground mb-4">
@@ -260,7 +244,8 @@ export function CategoryList() {
             <>
                 <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                     <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Search
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                         <Input
                             placeholder="Search categories..."
                             value={searchValue}
@@ -275,7 +260,7 @@ export function CategoryList() {
                             onValueChange={(value) => handleFilterChange('root_only', value === 'true')}
                         >
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Filter by level" />
+                                <SelectValue placeholder="Filter by level"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="true">Root Categories Only</SelectItem>
@@ -288,7 +273,7 @@ export function CategoryList() {
                             onValueChange={(value) => handleFilterChange('sort', value)}
                         >
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Sort by" />
+                                <SelectValue placeholder="Sort by"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="name">Name</SelectItem>
@@ -302,7 +287,7 @@ export function CategoryList() {
                             onValueChange={(value) => handleFilterChange('order', value)}
                         >
                             <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Order" />
+                                <SelectValue placeholder="Order"/>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="asc">Ascending</SelectItem>
@@ -316,24 +301,45 @@ export function CategoryList() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[200px]">Name</TableHead>
+                                <TableHead className="w-[120px]">Image</TableHead>
+                                <TableHead>Name</TableHead>
                                 <TableHead className="w-[150px]">Slug</TableHead>
                                 <TableHead className="w-[150px]">Parent</TableHead>
-                                <TableHead className="w-[100px]">Products</TableHead>
-                                <TableHead className="w-[100px]">Status</TableHead>
                                 <TableHead className="w-20 text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {categories.map((category) => (
                                 <TableRow key={category.id} className="hover:bg-muted/50">
-                                    <TableCell className="font-medium">
-                                        <div className="flex items-center gap-2">
-                                            {category.name}
+                                    <TableCell>
+                                        <div className="relative w-12 h-12 rounded-lg overflow-hidden border">
+                                            {category.image ? (
+                                                <Image
+                                                    src={category.image_url}
+                                                    alt={category.name}
+                                                    fill
+                                                    className="object-cover"
+                                                    sizes="60px"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-muted flex items-center justify-center">
+                                                    <span className="text-xs text-muted-foreground">
+                                                        No image
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     </TableCell>
+                                    <TableCell className="font-medium">
+                                        <div className="font-medium">{category.name}</div>
+                                        {category.description && (
+                                            <div className="text-sm text-muted-foreground truncate max-w-[200px]">
+                                                {category.description}
+                                            </div>
+                                        )}
+                                    </TableCell>
                                     <TableCell>
-                                        <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
+                                        <code className="text-xs bg-muted px-2 py-1 rounded">
                                             {category.slug}
                                         </code>
                                     </TableCell>
@@ -346,66 +352,22 @@ export function CategoryList() {
                                             <span className="text-muted-foreground">—</span>
                                         )}
                                     </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-1">
-                                            <span className="font-medium">{category.products_count || 0}</span>
-                                            <span className="text-muted-foreground text-sm">products</span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge
-                                            variant={category.is_active ? "default" : "secondary"}
-                                            className={category.is_active ? "bg-green-100 text-green-800 hover:bg-green-100" : ""}
-                                        >
-                                            {category.is_active ? (
-                                                <span className="flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-green-600"></span>
-                          Active
-                        </span>
-                                            ) : (
-                                                <span className="flex items-center gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-gray-400"></span>
-                          Inactive
-                        </span>
-                                            )}
-                                        </Badge>
-                                    </TableCell>
+
                                     <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                                    <span className="sr-only">Open menu</span>
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem className="cursor-pointer">
-                                                    <Eye className="mr-2 h-4 w-4" />
-                                                    View Details
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem className="cursor-pointer">
-                                                    <Edit className="mr-2 h-4 w-4" />
-                                                    Edit
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem className="cursor-pointer">
-                                                    {category.is_active ? (
-                                                        <>
-                                                            <ToggleLeft className="mr-2 h-4 w-4" />
-                                                            Deactivate
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <ToggleRight className="mr-2 h-4 w-4" />
-                                                            Activate
-                                                        </>
-                                                    )}
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
-                                                    <Trash2 className="mr-2 h-4 w-4" />
-                                                    Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                        <div className="flex items-center justify-end gap-2">
+                                        <button
+                                            className="cursor-pointer"
+                                            onClick={() => handleEditClick(category)}
+                                        >
+                                            <Edit className="mr-2 h-4 w-4"/>
+                                        </button>
+                                        <button
+                                            className="cursor-pointer text-destructive focus:text-destructive"
+                                            onClick={() => handleDeleteClick(category)}
+                                        >
+                                            <Trash2 className="mr-2 h-4 w-4"/>
+                                        </button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -419,8 +381,8 @@ export function CategoryList() {
                         <span className="font-semibold">{pagination.total}</span> categories
                         {form.watch('keyword') && (
                             <span className="ml-2">
-                for "<span className="font-medium">{form.watch('keyword')}</span>"
-              </span>
+                                for <span className="font-medium">{form.watch('keyword')}</span>
+                            </span>
                         )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -433,31 +395,8 @@ export function CategoryList() {
                         >
                             Previous
                         </Button>
-                        <div className="flex items-center gap-1">
-                            {Array.from({ length: Math.min(5, pagination.pages) }, (_, i) => {
-                                let pageNum;
-                                if (pagination.pages <= 5) {
-                                    pageNum = i + 1;
-                                } else if (pagination.page <= 3) {
-                                    pageNum = i + 1;
-                                } else if (pagination.page >= pagination.pages - 2) {
-                                    pageNum = pagination.pages - 4 + i;
-                                } else {
-                                    pageNum = pagination.page - 2 + i;
-                                }
-
-                                return (
-                                    <Button
-                                        key={pageNum}
-                                        variant={pagination.page === pageNum ? "default" : "outline"}
-                                        size="sm"
-                                        className="h-8 w-8 p-0"
-                                        onClick={() => handlePageChange(pageNum)}
-                                    >
-                                        {pageNum}
-                                    </Button>
-                                );
-                            })}
+                        <div className="text-sm text-muted-foreground">
+                            Page {pagination.page} of {pagination.pages}
                         </div>
                         <Button
                             variant="outline"
@@ -475,17 +414,77 @@ export function CategoryList() {
     };
 
     return (
-        <Card className="p-6 space-y-6">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Categories</h2>
-                    <p className="text-muted-foreground">
-                        Manage your product categories and subcategories
-                    </p>
+        <>
+            <Card className="p-6 space-y-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight">Categories</h2>
+                        <p className="text-muted-foreground">
+                            Manage your product categories and subcategories
+                        </p>
+                    </div>
+                    <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Category
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle>Create New Category</DialogTitle>
+                                <DialogDescription>
+                                    Add a new category to organize your products
+                                </DialogDescription>
+                            </DialogHeader>
+                            <CategoryForm
+                                onSuccess={handleFormSuccess}
+                            />
+                        </DialogContent>
+                    </Dialog>
                 </div>
-                <Button>Add Category</Button>
-            </div>
-            {renderContent()}
-        </Card>
+                {renderContent()}
+            </Card>
+
+            {/* Edit Category Dialog */}
+            <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Edit Category</DialogTitle>
+                        <DialogDescription>
+                            Update category details
+                        </DialogDescription>
+                    </DialogHeader>
+                    {selectedCategory && (
+                        <CategoryForm
+                            category={selectedCategory}
+                            onSuccess={handleFormSuccess}
+                        />
+                    )}
+                </DialogContent>
+            </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the category
+                            {categoryToDelete?.name} and all its subcategories.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteConfirm}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 }

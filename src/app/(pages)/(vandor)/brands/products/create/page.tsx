@@ -9,14 +9,17 @@ import { Suspense } from "react";
 export default async function ProductCreatePage() {
   const brandQuery: Record<string, string> = {
     is_active: "1",
+    per_page: "100",
   };
 
   const categoryQuery: Record<string, string> = {
     is_active: "1",
+    per_page: "100",
   };
 
   const campaignQuery: Record<string, string> = {
     is_active: "1",
+    per_page: "100",
   };
 
   // Fetch all data in parallel for better performance
@@ -28,6 +31,8 @@ export default async function ProductCreatePage() {
       getCampaigns(campaignQuery),
       getFormStateFromCookie(),
     ]);
+
+  console.log({ categoryData });
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -41,9 +46,9 @@ export default async function ProductCreatePage() {
 
       <Suspense fallback="Loading...">
         <ProductForm
-          categories={categoryData.data?.categories || []}
-          brands={brandData.data?.brands || []}
-          campaigns={campaignData.data?.campaigns || []}
+          categories={categoryData.data || []}
+          brands={brandData.data || []}
+          campaigns={campaignData.data || []}
           token={token || ""}
           savedFormData={savedFormData}
         />

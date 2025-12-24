@@ -58,12 +58,8 @@ export async function getHeroSection(id: number): Promise<HeroSectionResponse> {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
             },
-            cache: "no-store",
         });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
 
         return await response.json();
     } catch (error) {
@@ -91,7 +87,6 @@ export async function createHeroSection(
             body: formData,
         });
 
-
          // একবার read
         return await response.json();
     } catch (error) {
@@ -115,21 +110,14 @@ export async function updateHeroSection(
     try {
         const token = await getAuthToken();
         const url = `${API_BASE_URL}/admin/hero-section`;
-
-        // Add id to form data for PATCH request
-        formData.append("_method", "PATCH");
-
-        const response = await fetch(`${url}?id=${id}`, {
+formData.append('_method', 'PATCH');
+        const response = await fetch(`${url}/${id}`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
             },
             body: formData,
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
 
         return await response.json();
     } catch (error) {

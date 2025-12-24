@@ -1,13 +1,13 @@
-import CategoriesTabs from "./CategoriesTabs"
+import CategoriesTabs from "./CategoriesTabs";
 
 const TopCategories = () => {
   return (
-    <section className="py-10 bg-white">
-        <div className="container-fluid mx-auto">
-            <CategoriesTabs/>
-        </div>
+    <section className="bg-white">
+      <div className="container-fluid mx-auto">
+        <CategoriesTabs />
+      </div>
     </section>
-  )
-}
+  );
+};
 
-export default TopCategories
+export default TopCategories;

@@ -1,20 +1,31 @@
-import { PaginationMeta } from ".";
+import {PaginationMeta} from "@/types/index";
 
 export interface Campaign {
-  id: string; // UUID
+  id: string;
   name: string;
   slug: string;
   description?: string;
   banner_image?: string;
-  discount_percentage: number; // Decimal (e.g., 20.00 for 20%)
+  discount_percentage: number;
   starts_at: string;
   ends_at: string;
   is_active: boolean;
-  badge_text?: string; // e.g., "SALE", "BLACK FRIDAY"
-  badge_color?: string; // Hex color
+  badge_text?: string;
   created_at: string;
   updated_at: string;
   products_count?: number;
+  banner_image_url?: string;
+}
+
+export interface CampaignsResponse {
+  data: Campaign[];
+  pagination: PaginationMeta;
+}
+
+export interface CampaignResponse {
+  data: Campaign;
+  message: string;
+  status: string;
 }
 
 export interface CampaignStatistics {
@@ -22,9 +33,4 @@ export interface CampaignStatistics {
   active_products: number;
   days_remaining: number;
   is_ongoing: boolean;
-}
-
-export interface Campaigns {
-  campaigns: Campaign[];
-  pagination: PaginationMeta;
 }

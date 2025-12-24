@@ -11,11 +11,13 @@ export * from "./vendor";
 export * from "./purchase-order";
 export * from "./cart";
 export * from "./product-returns";
+export * from "./testimonial";
 
 export interface ApiResponse<T> {
   status: "success" | "error";
   message: string;
   data: T | null;
+  pagination?: PaginationMeta;
 }
 
 export interface PaginationMeta {

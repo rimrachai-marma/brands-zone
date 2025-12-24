@@ -40,7 +40,7 @@ import {
   Shield,
   ChevronUp,
   User,
-  LogOut,
+  LogOut, BadgePercent,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -77,7 +77,8 @@ export function AdminSidebar() {
         { icon: Users, label: "Customers", href: "/admin/customers" },
         { icon: Tag, label: "Categories", href: "/admin/categories" },
         { icon: TrendingUp, label: "Brands", href: "/admin/brands" },
-          { icon: MessageSquare, label: "Hero Section", href: "/admin/hero" },
+        { icon: MessageSquare, label: "Hero Section", href: "/admin/hero" },
+        { icon: BadgePercent, label: "Campaign", href: "/admin/campaign" },
       ],
     },
 

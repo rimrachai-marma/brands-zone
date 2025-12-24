@@ -1,5 +1,3 @@
-import { PaginationMeta } from ".";
-
 export interface Brand {
   id: string;
   name: string;
@@ -19,9 +17,4 @@ export interface BrandStatistics {
   draft_products: number;
   archived_products: number;
   total_variants: number;
-}
-
-export interface Brands {
-  brands: Brand[];
-  pagination: PaginationMeta;
 }

@@ -6,8 +6,7 @@ export const heroSectionSchema = z.object({
     subtitle: z.string().max(500).optional(),
     cta_text: z.string().max(100).optional(),
     cta_link: z.string().max(255).optional(),
-    order: z.number().int().min(0),
-    is_active: z.boolean(),
+    is_active: z.number(),
 });
 
 export const heroSectionFullSchema = heroSectionSchema.extend({

@@ -11,7 +11,6 @@ export interface HeroSection {
     full_image_1?: string;
     full_image_2?: string;
     full_image_3?: string;
-    order: number;
     is_active: boolean;
     created_at: string;
     updated_at: string;

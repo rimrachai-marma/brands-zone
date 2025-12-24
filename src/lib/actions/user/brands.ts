@@ -1,23 +1,23 @@
 "use server";
 
-import { ApiResponse, Brand } from "@/types";
+import { ApiResponse } from "@/types";
 import { serverEnv } from "@/data/env";
 
 // Configuration
 const API_BASE_URL = serverEnv.API_BASE_URL;
 
-export async function getBrands(
-  query: Record<string, string>
-): Promise<ApiResponse<Brand[]>> {
-  const searchParams = new URLSearchParams(query).toString();
+export type FeaturedBrand = {
+  id: number;
+  shop_name: string;
+  slug: string;
+  logo: string | null;
+};
 
-  let queryString = "";
-  if (searchParams) {
-    queryString += "?" + searchParams;
-  }
-
+export async function getFeaturedBrands(): Promise<
+  ApiResponse<FeaturedBrand[]>
+> {
   try {
-    const url = `${API_BASE_URL}/brands${queryString}`;
+    const url = `${API_BASE_URL}/user/vendors/featured`;
     const response = await fetch(url);
 
     const result = await response.json();

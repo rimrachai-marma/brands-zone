@@ -3,9 +3,9 @@ import { z } from 'zod';
 
 export const categoryFormSchema = z.object({
     name: z.string().min(1, 'Name is required').max(255),
-    slug: z.string().min(1, 'Slug is required').max(255),
+    slug: z.string().optional(),
     description: z.string().optional(),
-    image: z.string().optional(),
+    image: z.file().optional(),
     parent_id: z.string().optional(),
 });
 
@@ -24,5 +24,4 @@ export const categoryFilterSchema = z.object({
 });
 
 export type CategoryFilterInput = z.input<typeof categoryFilterSchema>;
-export type CategoryFilterOutput = z.output<typeof categoryFilterSchema>;
 export type CategoryFilterData = z.infer<typeof categoryFilterSchema>;
