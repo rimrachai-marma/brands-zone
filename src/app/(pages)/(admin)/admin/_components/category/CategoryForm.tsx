@@ -1,268 +1,280 @@
-// components/category/CategoryForm.tsx
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {CategoryFormData, categoryFormSchema} from '@/schema/category';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import React, { useState, useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CategoryFormData, categoryFormSchema } from "@/schema/category";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from '@/components/ui/form';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Category } from '@/types/category';
-import { createCategory, updateCategory,getCategories } from '@/lib/actions/admin/category';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Category } from "@/types/category";
+import {
+  createCategory,
+  updateCategory,
+  getCategories,
+} from "@/lib/actions/admin/category";
 import ImageUpload from "@/components/shared/ImageUpload";
 
 interface CategoryFormProps {
-    category?: Category;
-    onSuccess?: () => void;
+  category?: Category;
+  onSuccess?: () => void;
 }
 
 export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [apiErrors, setApiErrors] = useState<{ [key: string]: string[] }>({});
-    const [existingImages, setExistingImages] = useState<string|undefined>();
-const [parentCategories, setParentCategories] = useState<Category[]>([]);
-    const form = useForm<CategoryFormData>({
-        resolver: zodResolver(categoryFormSchema),
-        defaultValues: {
-            name: category?.name || '',
-            description: category?.description || '',
-            image: undefined,
-            parent_id: category?.parent_id
-                ? category.parent_id.toString()
-                : undefined,
-        },
-    });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [apiErrors, setApiErrors] = useState<{ [key: string]: string[] }>({});
+  const [existingImages, setExistingImages] = useState<string | undefined>();
+  const [parentCategories, setParentCategories] = useState<Category[]>([]);
+  const form = useForm<CategoryFormData>({
+    resolver: zodResolver(categoryFormSchema),
+    defaultValues: {
+      name: category?.name || "",
+      description: category?.description || "",
+      image: undefined,
+      parent_id: category?.parent_id ? category.parent_id.toString() : "root",
+    },
+  });
 
-    useEffect(() => {
-        if (category?.image_url) {
-            setExistingImages(category.image_url);
-        }
-    }, [category]);
-    const fetchCategories = async () => {
-        setError(null);
+  useEffect(() => {
+    if (category?.image_url) {
+      setExistingImages(category.image_url);
+    }
+  }, [category]);
 
-        try {
-            const response = await getCategories();
-            if (response.status === 'success' && response.data) {
-                setParentCategories(response.data)
-            }
-        } catch (err) {
-        }
-    };
+  const fetchCategories = async () => {
+    setError(null);
 
-    useEffect(()=>{
-        fetchCategories();
-    },[])
+    try {
+      const response = await getCategories();
+      if (response.status === "success" && response.data) {
+        setParentCategories(response.data);
+      }
+    } catch (err) {}
+  };
 
-    const handleImageChange = (file?: File) => {
-        form.setValue('image', file);
-        if (file) {
-            setExistingImages(URL.createObjectURL(file));
-        } else {
-            setExistingImages(undefined);
-        }
-    };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-    const getFieldError = (fieldName: string): string | undefined => {
-        // First check for API errors
-        if (apiErrors[fieldName] && apiErrors[fieldName].length > 0) {
-            return apiErrors[fieldName][0];
-        }
-        // Then check for form validation errors
-        const formError = form.formState.errors[fieldName as keyof typeof form.formState.errors];
-        return formError?.message?.toString();
-    };
+  const handleImageChange = (file?: File) => {
+    form.setValue("image", file);
+    if (file) {
+      setExistingImages(URL.createObjectURL(file));
+    } else {
+      setExistingImages(undefined);
+    }
+  };
 
-    const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
-        setIsLoading(true);
-        setError(null);
-        setApiErrors({});
+  const getFieldError = (fieldName: string): string | undefined => {
+    // First check for API errors
+    if (apiErrors[fieldName] && apiErrors[fieldName].length > 0) {
+      return apiErrors[fieldName][0];
+    }
+    // Then check for form validation errors
+    const formError =
+      form.formState.errors[fieldName as keyof typeof form.formState.errors];
+    return formError?.message?.toString();
+  };
 
-        try {
-            // Create FormData for file upload
-            const formData = new FormData();
-            formData.append('name', data.name);
+  const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
+    setIsLoading(true);
+    setError(null);
+    setApiErrors({});
 
-            if (data.description) {
-                formData.append('description', data.description);
-            }
+    try {
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("parent_id", "");
 
-            if (data.parent_id && data.parent_id !== 'root' && data.parent_id !== '') {
-                formData.append('parent_id', data.parent_id);
-            }
+      if (data.description) {
+        formData.append("description", data.description);
+      }
 
-            // Only append image if a new file is selected
-            if (data.image instanceof File) {
-                formData.append('image', data.image);
-            }
-            let res;
-            if (category?.id) {
-                res = await updateCategory(category.id, formData);
-            } else {
-                res = await createCategory(formData);
-            }
+      if (
+        data.parent_id &&
+        data.parent_id !== "root" &&
+        data.parent_id !== ""
+      ) {
+        formData.append("parent_id", data.parent_id);
+      }
 
-            if (res?.data?.errors) {
-                setApiErrors(res.data.errors);
+      // Only append image if a new file is selected
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      }
+      let res;
+      if (category?.id) {
+        res = await updateCategory(category.id, formData);
+      } else {
+        res = await createCategory(formData);
+      }
 
-                // Set form errors for better UX
-                Object.entries(res.data.errors).forEach(([field, messages]) => {
-                    if (Array.isArray(messages) && messages.length > 0) {
-                        form.setError(field as keyof CategoryFormData, {
-                            type: 'server',
-                            message: messages[0]
-                        });
-                    }
-                });
-                return;
-            }
+      if (res?.data?.errors) {
+        setApiErrors(res.data.errors);
 
-            // Check for general error message
-            if (!res?.status && res?.message) {
-                setError(res.message);
-                return;
-            }
+        // Set form errors for better UX
+        Object.entries(res.data.errors).forEach(([field, messages]) => {
+          if (Array.isArray(messages) && messages.length > 0) {
+            form.setError(field as keyof CategoryFormData, {
+              type: "server",
+              message: messages[0],
+            });
+          }
+        });
+        return;
+      }
 
-            // Only reset and call onSuccess if successful
-            form.reset();
-            setExistingImages(undefined);
-            onSuccess?.();
-        } catch (err) {
+      // Check for general error message
+      if (!res?.status && res?.message) {
+        setError(res.message);
+        return;
+      }
 
-            setError(err instanceof Error ? err.message : 'An error occurred');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      // Only reset and call onSuccess if successful
+      form.reset();
+      setExistingImages(undefined);
+      onSuccess?.();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {error && (
-                    <div className="bg-destructive/15 text-destructive px-4 py-3 rounded-md">
-                        {error}
-                    </div>
-                )}
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {error && (
+          <div className="bg-destructive/15 text-destructive px-4 py-3 rounded-md">
+            {error}
+          </div>
+        )}
 
-                <FormField
-                    control={form.control}
-                    name="image"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormControl>
-                                <ImageUpload
-                                    value={field.value}
-                                    onChange={handleImageChange}
-                                    previewUrl={existingImages}
-                                    error={getFieldError('image')}
-                                    label="Category Image"
-                                    required={false}
-                                    maxSize={2}
-                                    accept="image/jpeg,image/png,image/jpg"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <ImageUpload
+                  value={field.value}
+                  onChange={handleImageChange}
+                  previewUrl={existingImages}
+                  error={getFieldError("image")}
+                  label="Category Image"
+                  required={false}
+                  maxSize={2}
+                  accept="image/jpeg,image/png,image/jpg"
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-                <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Category name" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Category name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="parent_id"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Parent Category</FormLabel>
+              <Select
+                value={field.value || "root"}
+                onValueChange={(value) => {
+                  field.onChange(value === "root" ? "root" : value);
+                }}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select parent category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="root">None (Root Category)</SelectItem>
+                  {parentCategories
+                    .filter((cat) => cat.id !== category?.id)
+                    .map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id.toString()}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Category description"
+                  className="resize-none"
+                  {...field}
+                  value={field.value || ""}
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-                <FormField
-                    control={form.control}
-                    name="parent_id"
-                    render={({ field }) => (
-                        <FormItem className="w-full">
-                            <FormLabel>Parent Category</FormLabel>
-                            <Select
-                                value={field.value?.toString() ?? 'root'}
-                                onValueChange={(value) => {
-                                    field.onChange(value === 'root' ? undefined : value);
-                                }}
-                            >
-                                <FormControl>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select parent category" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="root">None (Root Category)</SelectItem>
-                                    {parentCategories.map((cat) => (
-                                        <SelectItem key={cat.id} value={cat.id.toString()}>
-                                            {cat.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder="Category description"
-                                    className="resize-none"
-                                    {...field}
-                                    value={field.value || ''}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <div className="flex gap-2">
-                    <Button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Saving...' : category ? 'Update Category' : 'Create Category'}
-                    </Button>
-                    {category && (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => onSuccess?.()}
-                            disabled={isLoading}
-                        >
-                            Cancel
-                        </Button>
-                    )}
-                </div>
-            </form>
-        </Form>
-    );
+        <div className="flex gap-2">
+          <Button type="submit" disabled={isLoading}>
+            {isLoading
+              ? "Saving..."
+              : category
+              ? "Update Category"
+              : "Create Category"}
+          </Button>
+          {category && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onSuccess?.()}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
+      </form>
+    </Form>
+  );
 }
