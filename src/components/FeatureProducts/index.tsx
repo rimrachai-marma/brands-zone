@@ -3,7 +3,7 @@ import FeatureProducts from "./FeatureProducts";
 
 const HotDeal = async () => {
   const result = await getCategories({
-    per_page: 6,
+    per_page: 100,
     with_products_count: 1,
     root_only: 1,
   });
