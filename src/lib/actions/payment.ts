@@ -32,7 +32,6 @@ export async function payment(data: paymentData): Promise<ActionState<
 
     return await response.json();
   } catch (error) {
-    console.log("Error updating user profile:", error);
     return null;
   }
 }

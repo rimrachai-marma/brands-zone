@@ -47,7 +47,6 @@ const SecurityInformation: React.FC = () => {
     });
   };
 
-  console.log(state);
 
   React.useEffect(() => {
     if (state?.status === "success") {

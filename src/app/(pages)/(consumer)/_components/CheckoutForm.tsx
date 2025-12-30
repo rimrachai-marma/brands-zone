@@ -51,7 +51,7 @@ const CheckoutForm = () => {
     });
 
     const {control, handleSubmit, setValue, formState: {errors}, reset} = form;
-    console.log(errors);
+
     useEffect(() => {
         fetchCartData();
     }, []);
@@ -101,23 +101,17 @@ const CheckoutForm = () => {
                     // dispatch(clearCart());
                     toast.success("Order placed successfully!");
                     setIsPaymentModalOpen(true);
-                    // setCartData(null);
-                    // reset()
-                    console.log(result);
                     setOrderData(result.data);
                 } else {
                     toast.error(result.message || "Failed to place order");
-                    console.log(result);
                 }
             }).catch((err) => {
-                console.log(err);
             });
 
 
         } catch (error) {
             console.error("Checkout error:", error);
             toast.error("An error occurred during checkout");
-            console.log(error)
         } finally {
             setIsSubmitting(false);
         }

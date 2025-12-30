@@ -40,7 +40,7 @@ import {
   Shield,
   ChevronUp,
   User,
-  LogOut, BadgePercent,
+  LogOut, BadgePercent, MessageSquareQuote, ClipboardClock,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,56 +53,54 @@ export function AdminSidebar() {
       title: "Overview",
       items: [
         { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
-        { icon: BarChart3, label: "Analytics", href: "/admin/analytics" },
+        // { icon: BarChart3, label: "Analytics", href: "/admin/analytics" },
       ],
     },
     {
       title: "Vendor Management",
       items: [
         { icon: Store, label: "Vendors", href: "/admin/vendors" },
-        {
-          icon: UserCog,
-          label: "Vendor Requests",
-          href: "/admin/vendor-requests",
-        },
-        { icon: CreditCard, label: "Payouts", href: "/admin/payouts" },
-        { icon: Percent, label: "Commission", href: "/admin/commission" },
+
+        // { icon: CreditCard, label: "Payouts", href: "/admin/payouts" },
+        // { icon: Percent, label: "Commission", href: "/admin/commission" },
       ],
     },
     {
       title: "Platform Management",
       items: [
         { icon: ShoppingBag, label: "All Products", href: "/admin/products" },
-        { icon: ShoppingCart, label: "All Orders", href: "/admin/orders" },
-        { icon: Users, label: "Customers", href: "/admin/customers" },
+        { icon: ClipboardClock, label: "Products Request", href: "/admin/products-request" },
+        // { icon: ShoppingCart, label: "All Orders", href: "/admin/orders" },
+        // { icon: Users, label: "Customers", href: "/admin/customers" },
         { icon: Tag, label: "Categories", href: "/admin/categories" },
-        { icon: TrendingUp, label: "Brands", href: "/admin/brands" },
+        // { icon: TrendingUp, label: "Brands", href: "/admin/brands" },
         { icon: MessageSquare, label: "Hero Section", href: "/admin/hero" },
         { icon: BadgePercent, label: "Campaign", href: "/admin/campaign" },
+        { icon: MessageSquareQuote, label: "Testimonials", href: "/admin/testimonials" },
       ],
     },
 
-    {
-      title: "System",
-      items: [
-        {
-          icon: AlertCircle,
-          label: "Reports & Disputes",
-          href: "/admin/reports",
-        },
-        {
-          icon: MessageSquare,
-          label: "Support Tickets",
-          href: "/admin/support",
-        },
-        { icon: Globe, label: "Site Settings", href: "/admin/site-settings" },
-        { icon: FileText, label: "Reports", href: "/admin/analytics-reports" },
-      ],
-    },
-    {
-      title: "Settings",
-      items: [{ icon: Settings, label: "Settings", href: "/admin/settings" }],
-    },
+    // {
+    //   title: "System",
+    //   items: [
+    //     {
+    //       icon: AlertCircle,
+    //       label: "Reports & Disputes",
+    //       href: "/admin/reports",
+    //     },
+    //     {
+    //       icon: MessageSquare,
+    //       label: "Support Tickets",
+    //       href: "/admin/support",
+    //     },
+    //     { icon: Globe, label: "Site Settings", href: "/admin/site-settings" },
+    //     { icon: FileText, label: "Reports", href: "/admin/analytics-reports" },
+    //   ],
+    // },
+    // {
+    //   title: "Settings",
+    //   items: [{ icon: Settings, label: "Settings", href: "/admin/settings" }],
+    // },
   ];
 
   return (

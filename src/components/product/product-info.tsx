@@ -26,7 +26,7 @@ const ProductInfo: React.FC<Props> = ({ product }) => {
       );
     })!;
   }, [selectedAttributes, product.variants]);
-    console.log(currentVariant)
+
   // Helper: Check if an option is available in any valid combination
   const isOptionAvailable = (attributeSlug: string, value: string) => {
     return product.variants.some((v) => {

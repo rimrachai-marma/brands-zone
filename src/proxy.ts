@@ -11,9 +11,10 @@ const protectedRoutes = ["/profile"];
 const adminRoutes = ["/admin"];
 const brandsRouts = ["/brands"];
 const authRoutes = ["/login", "/signup"];
-const publicRoutes = ["/", "/about-us", "/contact-us", "/blog", "/search"];
-
-const publicDynamicRoutes = ["/products", "/brands-list"];
+const publicRoutes = ["/", "/about-us", "/contact-us", "/blog", "/search",'/brands-list','/brands-list/*'];
+const publicRoutePrefixes = [
+  "/brands-list",
+];
 
 function isAdminUser(user: User): boolean {
   return user.role === "admin";
@@ -26,68 +27,63 @@ export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isProtectedRoute = protectedRoutes.includes(pathname);
-  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
-  const isBrandsRoute = brandsRouts.some((route) => pathname.startsWith(route));
+  const isAdminRoute = adminRoutes.some((route) =>
+      pathname.startsWith(route)
+  );
+  const isBrandsRoute = brandsRouts.some((route) =>
+      pathname.startsWith(route)
+  );
   const isAuthRoute = authRoutes.includes(pathname);
+
   const isPublicRoute =
-    publicRoutes.includes(pathname) ||
-    publicDynamicRoutes.some((route) => pathname.startsWith(route));
+      publicRoutes.includes(pathname) ||
+      publicRoutePrefixes.some((route) => pathname.startsWith(route));
 
-  const authToken = await getAuthToken();
-
-  // Public route without auth → allow
-  if (isPublicRoute && !authToken) {
+  // ✅ PUBLIC ROUTES → ALWAYS ALLOW
+  if (isPublicRoute) {
     return NextResponse.next();
   }
 
-  // Validate user if token exists
+  const authToken = await getAuthToken();
+
   let user: User | null = null;
   if (authToken) {
     user = await validateUser(authToken);
   }
 
-  // Logged-in users visiting /login or /signup → redirect
+  // Logged-in user visiting login/signup
   if (isAuthRoute && user) {
     let redirectTo = "/";
 
-    if (isAdminUser(user)) {
-      redirectTo = "/admin/dashboard";
-    }
-
-    if (isVendorsUser(user)) {
-      redirectTo = "/brands/dashboard";
-    }
+    if (isAdminUser(user)) redirectTo = "/admin/dashboard";
+    if (isVendorsUser(user)) redirectTo = "/brands/dashboard";
 
     return NextResponse.redirect(new URL(redirectTo, req.url));
   }
 
-  // Protected/admin routes require authentication
+  // Protected routes require auth
   if ((isProtectedRoute || isAdminRoute || isBrandsRoute) && !user) {
     const loginUrl = new URL("/login", req.url);
-    loginUrl.searchParams.set("redirect", req.nextUrl.pathname);
+    loginUrl.searchParams.set("redirect", pathname);
 
     const response = NextResponse.redirect(loginUrl);
-
-    // Clear invalid token
-    if (authToken) {
-      response.cookies.delete(TOKEN_COOKIE_NAME);
-    }
+    if (authToken) response.cookies.delete(TOKEN_COOKIE_NAME);
 
     return response;
   }
 
-  // User exists but not an admin → prevent admin access
+  // Role protection
   if (user && isAdminRoute && !isAdminUser(user)) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // User exists but not an brands → prevent brands access
   if (user && isBrandsRoute && !isVendorsUser(user)) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
+
 
 export const config = {
   matcher: [

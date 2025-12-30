@@ -19,7 +19,7 @@ const LoginPage = () => {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center flex flex-col items-center space-y-1.5">
           <MainLogo />
-          <p className="text-gray-500 text-sm">Your trusted marketplace</p>
+          <p className="text-gray-500 text-sm">The Marketplace for Sustainable Brands</p>
         </div>
 
         <Card className="shadow-lg rounded-md">

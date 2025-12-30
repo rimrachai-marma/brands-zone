@@ -227,7 +227,6 @@ export default async function update(
 
     return await response.json();
   } catch (error) {
-    console.log("Error updating user profile:", error);
     return null;
   }
 }

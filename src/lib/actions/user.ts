@@ -24,7 +24,6 @@ export async function getUserProfile(): Promise<ApiResponse<{
 
     return await response.json();
   } catch (error) {
-    console.log("Error fetching user profile:", error);
     return null;
   }
 }
@@ -52,7 +51,6 @@ export default async function updateUser(
 
     return await response.json();
   } catch (error) {
-    console.log("Error updating user profile:", error);
     return null;
   }
 }
@@ -79,7 +77,6 @@ export async function getUserCartData(data: {
 
     return await response.json();
   } catch (error) {
-    console.log("Error updating user profile:", error);
     return null;
   }
 }
@@ -104,7 +101,6 @@ export async function checkout(data: any): Promise<ActionState<
 
     return await response.json();
   } catch (error) {
-    console.log("Error updating user profile:", error);
     return null;
   }
 }

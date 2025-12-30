@@ -23,11 +23,10 @@ interface CampaignFormProps {
     campaign?: Campaign;
     onSubmit: (data: FormData) => Promise<void>;
     isSubmitting: boolean;
-    apiError?: string | null;
     fieldErrors?: Record<string, string[]>;
 }
 
-export function CampaignForm({campaign, onSubmit, isSubmitting, apiError, fieldErrors}: CampaignFormProps) {
+export function CampaignForm({campaign, onSubmit, isSubmitting, fieldErrors}: CampaignFormProps) {
     const [previewImage, setPreviewImage] = useState<string | undefined>(
         campaign?.banner_image_url || undefined
     );
@@ -88,11 +87,8 @@ export function CampaignForm({campaign, onSubmit, isSubmitting, apiError, fieldE
         });
 
         try {
-            await onSubmit(formData).catch((error) => {
-                console.log(error);
-            });
+            await onSubmit(formData)
         } catch (error: any) {
-            console.log(error)
             if (error.response?.data?.errors) {
                 const errors = error.response.data.errors;
                 Object.entries(errors).forEach(([field, messages]) => {
@@ -115,43 +111,11 @@ export function CampaignForm({campaign, onSubmit, isSubmitting, apiError, fieldE
         }
     };
 
-    const handleApiErrors = (error: any) => {
-        if (error.response?.data?.errors) {
-            const errors = error.response.data.errors;
-            Object.entries(errors).forEach(([field, messages]) => {
-                if (Array.isArray(messages)) {
-                    form.setError(field as any, {
-                        type: 'manual',
-                        message: messages[0]
-                    });
-                }
-            });
-            return true;
-        }
-        return false;
-    };
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                {/* API Error Message */}
-                {apiError && (
-                    <div className="rounded-md bg-destructive/15 p-4">
-                        <div className="flex items-center">
-                            <div className="shrink-0">
-                                <div className="h-5 w-5 text-destructive">!</div>
-                            </div>
-                            <div className="ml-3">
-                                <h3 className="text-sm font-medium text-destructive">
-                                    Please fix the following errors:
-                                </h3>
-                                <div className="mt-2 text-sm text-destructive">
-                                    {apiError}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
@@ -329,12 +293,6 @@ export function CampaignForm({campaign, onSubmit, isSubmitting, apiError, fieldE
 
                     <div className="space-y-6">
                         <Card>
-                            <CardHeader>
-                                <CardTitle>Banner Image</CardTitle>
-                                <CardDescription>
-                                    Upload a banner for your campaign
-                                </CardDescription>
-                            </CardHeader>
                             <CardContent>
                                 <FormField
                                     control={form.control}

@@ -1,4 +1,3 @@
-import { PaginationMeta } from "@/types/index";
 
 export interface Testimonial {
   id: string;
@@ -13,10 +12,6 @@ export interface Testimonial {
   updated_at: string;
 }
 
-export interface TestimonialsResponse {
-  testimonials: Testimonial[];
-  pagination: PaginationMeta;
-}
 
 export interface CreateTestimonialData {
   name: string;
@@ -27,4 +22,4 @@ export interface CreateTestimonialData {
   is_active: boolean;
 }
 
-export interface UpdateTestimonialData extends Partial<CreateTestimonialData> {}
+export type UpdateTestimonialData = Partial<CreateTestimonialData>

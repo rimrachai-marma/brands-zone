@@ -63,8 +63,7 @@ export default function AdminProfilePage() {
   };
 
   const handleSaveProfile = async () => {
-    console.log("Saving profile:", userData);
-    // API call here
+
   };
 
   const handleChangePassword = async () => {
@@ -72,8 +71,6 @@ export default function AdminProfilePage() {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Changing password");
-    // API call here
   };
 
   const formatDate = (dateString: string) => {

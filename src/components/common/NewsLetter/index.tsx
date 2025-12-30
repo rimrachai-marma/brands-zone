@@ -8,8 +8,6 @@ import { motion } from "framer-motion";
 
 // This is a placeholder for your actual form submission logic
 const handleSubmit = (email: string) => {
-  console.log("Subscribing email:", email);
-  // In a real application, you would send this to an API endpoint
   alert(`Thank you for subscribing, ${email}!`);
 };
 

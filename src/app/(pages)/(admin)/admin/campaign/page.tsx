@@ -2,17 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plus, Search ,Calendar, Edit, Trash2, Eye } from 'lucide-react';
+import { Plus, Search, Calendar, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { toast } from 'react-hot-toast';
-import {getCampaigns, toggleCampaignStatus, deleteCampaign, GetCampaignsParams} from '@/lib/actions/admin/campaigns';
+import { getCampaigns, toggleCampaignStatus, deleteCampaign, GetCampaignsParams } from '@/lib/actions/admin/campaigns';
 import { Campaign } from '@/types/campaigns';
 import { CampaignFilterData } from '@/schema/campaign';
 import { format } from 'date-fns';
@@ -32,6 +42,13 @@ export default function CampaignsPage() {
         pages: 1,
         total: 0,
     });
+
+    // Delete modal state
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [campaignToDelete, setCampaignToDelete] = useState<{
+        id: string;
+        name: string;
+    } | null>(null);
 
     const fetchCampaigns = async () => {
         setIsLoading(true);
@@ -60,15 +77,27 @@ export default function CampaignsPage() {
         }
     };
 
-    const handleDelete = async (id: string, name: string) => {
-        if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+    const openDeleteModal = (id: string, name: string) => {
+        setCampaignToDelete({ id, name });
+        setDeleteModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        setDeleteModalOpen(false);
+        setCampaignToDelete(null);
+    };
+
+    const handleDelete = async () => {
+        if (!campaignToDelete) return;
 
         try {
-            await deleteCampaign(id);
+            await deleteCampaign(campaignToDelete.id);
             fetchCampaigns();
             toast.success('Campaign deleted successfully');
         } catch (error) {
-            toast.error('Error updating campaign status');
+            toast.error('Failed to delete campaign');
+        } finally {
+            closeDeleteModal();
         }
     };
 
@@ -93,6 +122,31 @@ export default function CampaignsPage() {
 
     return (
         <div className="space-y-6">
+            {/* Delete Confirmation Modal */}
+            <AlertDialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the campaign
+                            <span className="font-semibold text-foreground">
+                {" "}"{campaignToDelete?.name}"{" "}
+              </span>
+                            and remove it from our servers.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={closeDeleteModal}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDelete}
+                            className="bg-red-600 text-white hover:bg-red-700"
+                        >
+                            Delete Campaign
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Campaigns</h1>
@@ -204,7 +258,7 @@ export default function CampaignsPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                    {campaign.discount_percentage}%
+                                                {campaign.discount_percentage}%
                                             </TableCell>
                                             <TableCell>
                                                 <div className="space-y-1">
@@ -224,7 +278,6 @@ export default function CampaignsPage() {
                                             </TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
-
                                                     <Badge variant={getStatusColor(campaign) as any}>
                                                         {getStatusColor(campaign) === 'green' ? 'Active' :
                                                             getStatusColor(campaign) === 'blue' ? 'Upcoming' :
@@ -241,14 +294,14 @@ export default function CampaignsPage() {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        onClick={() => router.push(`/admin/campaigns/${campaign.id}/edit`)}
+                                                        onClick={() => router.push(`/admin/campaign/${campaign.id}/edit`)}
                                                     >
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        onClick={() => handleDelete(campaign.id, campaign.name)}
+                                                        onClick={() => openDeleteModal(campaign.id, campaign.name)}
                                                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                                     >
                                                         <Trash2 className="h-4 w-4" />

@@ -1,10 +1,10 @@
 // types/hero-section.ts
 export interface HeroSection {
     id: number;
-    title: string;
-    subtitle?: string;
-    cta_text?: string;
-    cta_link?: string;
+    title?: string | null;
+    subtitle?: string | null;
+    cta_text?: string | null;
+    cta_link?: string | null;
     image_1?: string;
     image_2?: string;
     image_3?: string;

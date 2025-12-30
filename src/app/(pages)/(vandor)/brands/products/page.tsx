@@ -43,7 +43,7 @@ export default async function VendorProductsPage(props: {
   }
 
   const result = await getVendorProducts(query);
-  console.log(result);
+
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">

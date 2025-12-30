@@ -5,7 +5,7 @@ const HotDeal = async () => {
   const result = await getCategories({
     per_page: 6,
     with_products_count: 1,
-    root_only: 1,
+    // root_only: 1,
   });
 
   return (

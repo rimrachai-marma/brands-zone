@@ -34,7 +34,6 @@ export async function create(
 
     return await response.json();
   } catch (error) {
-    console.log("Create supllier error: ", error);
     return {
       status: "error",
       message: "An unexpected error occurred",
@@ -71,7 +70,6 @@ export async function getSuppliers(
 
     return await response.json();
   } catch (error) {
-    console.log("Get suppliers error:", error);
     return {
       status: "error",
       message: "Failed to fetch suppliers",

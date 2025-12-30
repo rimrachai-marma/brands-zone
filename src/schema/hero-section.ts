@@ -2,10 +2,10 @@
 import { z } from "zod";
 
 export const heroSectionSchema = z.object({
-    title: z.string().min(1, "Title is required").max(255),
-    subtitle: z.string().max(500).optional(),
-    cta_text: z.string().max(100).optional(),
-    cta_link: z.string().max(255).optional(),
+    title: z.any().optional(),
+    subtitle: z.any().optional(),
+    cta_text: z.any().optional(),
+    cta_link: z.any().optional(),
     is_active: z.number(),
 });
 

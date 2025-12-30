@@ -21,7 +21,6 @@ export async function getTestimonials(
   params: GetTestimonialsParams = {}
 ): Promise<ApiResponse<Testimonial[]>> {
   const queryParams = new URLSearchParams();
-  const token = getAuthToken();
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== "all") {
       queryParams.append(key, value.toString());
@@ -34,7 +33,6 @@ export async function getTestimonials(
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
@@ -45,6 +43,38 @@ export async function getTestimonials(
     throw error;
   }
 }
+
+
+export async function getAdminTestimonials(
+    params: GetTestimonialsParams = {}
+): Promise<ApiResponse<Testimonial[]>> {
+  const queryParams = new URLSearchParams();
+  const token =await getAuthToken();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "all") {
+      queryParams.append(key, value.toString());
+    }
+  });
+
+  try {
+    const response = await fetch(
+        `${API_BASE_URL}/admin/testimonials?${queryParams}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+    );
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    throw error;
+  }
+}
+
+
 
 export async function getTestimonialById(
   id: string
@@ -92,18 +122,13 @@ export async function createTestimonial(
 ): Promise<ApiResponse<{ testimonial: Testimonial }>> {
   const formData: FormData = extracted(data);
   const token = await getAuthToken();
-  const response: Response = await fetch(`${API_BASE_URL}/testimonials`, {
+  const response: Response = await fetch(`${API_BASE_URL}/admin/testimonials`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
     },
     body: formData,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to create testimonial");
-  }
 
   return response.json();
 }
@@ -114,18 +139,14 @@ export async function updateTestimonial(
 ): Promise<ApiResponse<{ testimonial: Testimonial }>> {
   const formData: FormData = extracted(data);
   const token = await getAuthToken();
-  const response: Response = await fetch(`${API_BASE_URL}/testimonials/${id}`, {
-    method: "PUT",
+  formData.append('_method', 'PUT');
+  const response: Response = await fetch(`${API_BASE_URL}/admin/testimonials/${id}`, {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
     },
     body: formData,
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to update testimonial");
-  }
 
   return response.json();
 }
@@ -134,7 +155,7 @@ export async function deleteTestimonial(
   id: string
 ): Promise<ApiResponse<{ message: string }>> {
   const token = await getAuthToken();
-  const response = await fetch(`${API_BASE_URL}/testimonials/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/admin/testimonials/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -143,7 +164,7 @@ export async function deleteTestimonial(
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.message || "Failed to delete testimonial");
+    throw new Error(error.message || "Failed to delete testimonials");
   }
 
   return response.json();
@@ -154,7 +175,7 @@ export async function toggleTestimonialStatus(
 ): Promise<ApiResponse<{ testimonial: Testimonial }>> {
   const token = await getAuthToken();
   const response = await fetch(
-    `${API_BASE_URL}/testimonials/${id}/toggle-status`,
+    `${API_BASE_URL}/admin/testimonials/${id}/toggle-status`,
     {
       method: "PATCH",
       headers: {
@@ -166,28 +187,6 @@ export async function toggleTestimonialStatus(
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message || "Failed to toggle status");
-  }
-
-  return response.json();
-}
-
-export async function toggleFeaturedStatus(
-  id: string
-): Promise<ApiResponse<{ testimonial: Testimonial }>> {
-  const token = await getAuthToken();
-  const response = await fetch(
-    `${API_BASE_URL}/testimonials/${id}/toggle-featured`,
-    {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || "Failed to toggle featured status");
   }
 
   return response.json();

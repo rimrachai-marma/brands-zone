@@ -13,7 +13,6 @@ export default async function page({
     setTimeout(() => resolve(blog), 100); 
     
   });
-console.log('id',id)
   const [blog] = await Promise.all([blogPromise]);
 
   if (!blog) {

@@ -22,8 +22,7 @@ const ContactForm = () => {
   });
 
   const onSubmit = async (values: ContactFormValues) => {
-    console.log("Form submitted:", values);
-    // replace with your API logic
+
   };
 
   const animationProps = {

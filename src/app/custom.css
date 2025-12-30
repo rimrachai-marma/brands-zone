@@ -60,7 +60,3 @@ button:not(:disabled) {
 span.swiper-pagination-bullet {
   background: #f12029;
 }
-
-* {
-  word-break: break-all;
-}

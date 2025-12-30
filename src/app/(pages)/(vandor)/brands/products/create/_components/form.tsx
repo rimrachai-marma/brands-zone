@@ -312,8 +312,6 @@ export default function MultiStepProductForm({
     });
   };
 
-  console.log(state);
-
   const progress = (currentStep / STEPS.length) * 100;
   const currentStepData = STEPS[currentStep - 1];
 

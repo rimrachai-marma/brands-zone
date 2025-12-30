@@ -126,7 +126,6 @@ const ProfileOverview: React.FC<Props> = ({
               id: image.id,
             });
           } catch (error) {
-            console.log(error);
             reject(new Error("Invalid JSON response from server"));
           }
         } else {
@@ -139,7 +138,6 @@ const ProfileOverview: React.FC<Props> = ({
               )
             );
           } catch (error) {
-            console.log(error);
             reject(new Error(`Upload failed with status ${xhr.status}`));
           }
         }
@@ -261,8 +259,7 @@ const ProfileOverview: React.FC<Props> = ({
 
   const deleteImage = async (imageId: string) => {
     try {
-      console.log(`Deleting image: ${imageId}`);
-      // await fetch(`/api/upload/${imageId}`, { method: 'DELETE' });
+
     } catch (error) {
       console.error("Delete failed:", error);
     }

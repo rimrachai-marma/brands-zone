@@ -28,11 +28,7 @@ export default function EditCampaignPage() {
             const response = await getCampaign(params.id as string);
             setCampaign(response.data);
         } catch (error: any) {
-            toast({
-                title: 'Error',
-                description: error.message || 'Failed to load campaign',
-                variant: 'destructive',
-            });
+            toast.error(error.message);
             router.push('/admin/campaign');
         } finally {
             setIsLoading(false);
@@ -47,13 +43,13 @@ export default function EditCampaignPage() {
         setFieldErrors({});
 
         try {
-            await updateCampaign(params.id as string, formData);
-            toast({
-                title: 'Success',
-                description: 'Campaign updated successfully',
-            });
-            router.push('/admin/campaigns');
-            router.refresh();
+           const res = await updateCampaign(params.id as string, formData);
+           if (res.status=='success') {
+               toast.success('Campaign updated successfully');
+               router.push('/admin/campaign');
+               router.refresh();
+           }
+
         } catch (error: any) {
             console.error('Update campaign error:', error);
 
@@ -63,17 +59,7 @@ export default function EditCampaignPage() {
 
             if (error.response?.data?.errors) {
                 setFieldErrors(error.response.data.errors);
-                toast({
-                    title: 'Validation Error',
-                    description: 'Please check the form for errors',
-                    variant: 'destructive',
-                });
-            } else {
-                toast({
-                    title: 'Error',
-                    description: error.message || 'Failed to update campaign',
-                    variant: 'destructive',
-                });
+                toast.error('Campaign updated failed');
             }
         } finally {
             setIsSubmitting(false);

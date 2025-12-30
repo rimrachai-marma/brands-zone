@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { testimonialFormSchema, TestimonialFormValues } from "@/schema";
@@ -16,7 +16,6 @@ import {
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -26,24 +25,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Star, Upload, X, Save, User, Briefcase, MessageSquare } from "lucide-react";
+import {Switch} from "@/components/ui/switch";
 
-interface TestimonialFormProps {
-    onSubmit: (data: CreateTestimonialData | UpdateTestimonialData) => Promise<void>;
+interface TestimonialFormProps<T> {
+    onSubmit: (data: T) => Promise<void>;
     initialData?: Testimonial | null;
     isSubmitting?: boolean;
     onCancel?: () => void;
 }
 
-export default function TestimonialForm({
-                                            onSubmit,
-                                            initialData,
-                                            isSubmitting = false,
-                                            onCancel,
-                                        }: TestimonialFormProps) {
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+export default function TestimonialForm<T extends CreateTestimonialData | UpdateTestimonialData>({
+                                                                                                     onSubmit,
+                                                                                                     initialData,
+                                                                                                     isSubmitting = false,
+                                                                                                     onCancel,
+                                                                                                 }: TestimonialFormProps<T>) {
+
+    const [avatarPreview, setAvatarPreview] = useState<string | undefined>(undefined);
 
     const form = useForm<TestimonialFormValues>({
         resolver: zodResolver(testimonialFormSchema),
@@ -68,7 +68,7 @@ export default function TestimonialForm({
                 avatar: initialData.avatar || undefined,
             });
             if (initialData.avatar) {
-                setAvatarPreview(initialData.avatar);
+                setAvatarPreview(initialData.avatar_url);
             }
         }
     }, [initialData, form]);
@@ -76,7 +76,6 @@ export default function TestimonialForm({
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setAvatarFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setAvatarPreview(reader.result as string);
@@ -87,28 +86,20 @@ export default function TestimonialForm({
     };
 
     const removeAvatar = () => {
-        setAvatarFile(null);
-        setAvatarPreview(null);
+        setAvatarPreview(undefined);
         form.setValue("avatar", undefined);
     };
 
     const handleSubmit = async (values: TestimonialFormValues) => {
-        const submitData = {
-            ...values,
-            avatar: avatarFile || values.avatar,
-        };
-        await onSubmit(submitData);
+        await onSubmit(values as T);
     };
 
     return (
-        <Card className="w-full max-w-2xl">
+        <Card className="w-full max-w-4xl">
             <CardHeader>
                 <CardTitle>
                     {initialData ? "Edit Testimonial" : "Add New Testimonial"}
                 </CardTitle>
-                <CardDescription>
-                    {initialData ? "Update testimonial details" : "Create a new customer testimonial"}
-                </CardDescription>
             </CardHeader>
 
             <Form {...form}>
@@ -122,7 +113,7 @@ export default function TestimonialForm({
                                     {avatarPreview ? (
                                         <div className="relative">
                                             <Avatar className="w-32 h-32">
-                                                <AvatarImage src={avatarPreview} alt="Preview" />
+                                                <AvatarImage src={avatarPreview} alt="Preview" className={'object-cover object-center'}/>
                                                 <AvatarFallback className="text-2xl">
                                                     {form.watch("name")?.charAt(0) || "U"}
                                                 </AvatarFallback>
@@ -238,7 +229,7 @@ export default function TestimonialForm({
                                                         className={`w-8 h-8 ${
                                                             star <= field.value
                                                                 ? "fill-yellow-400 text-yellow-400"
-                                                                : "text-muted"
+                                                                : " fill-gray-300 text-gray-300"
                                                         }`}
                                                     />
                                                 </Button>
@@ -247,9 +238,6 @@ export default function TestimonialForm({
                                         <FormControl className="hidden">
                                             <Input type="number" {...field} />
                                         </FormControl>
-                                        <div className="text-sm text-muted-foreground">
-                                            Selected: {field.value} out of 5 stars
-                                        </div>
                                     </div>
                                     <FormMessage />
                                 </FormItem>
@@ -293,69 +281,29 @@ export default function TestimonialForm({
                         <FormField
                             control={form.control}
                             name="is_active"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Status</FormLabel>
-                                    <div className="flex gap-4">
-                                        <div
-                                            className={`flex-1 p-4 rounded-lg border cursor-pointer transition-all ${
-                                                field.value
-                                                    ? "bg-green-50 border-green-200"
-                                                    : "bg-muted border-muted"
-                                            }`}
-                                            onClick={() => field.onChange(true)}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className={`p-2 rounded-full ${
-                                                    field.value ? "bg-green-100" : "bg-muted"
-                                                }`}>
-                                                    <Badge variant={field.value ? "default" : "outline"} className="bg-green-500">
-                                                        Active
-                                                    </Badge>
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="font-medium">Active</div>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        Testimonial will be visible
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            className={`flex-1 p-4 rounded-lg border cursor-pointer transition-all ${
-                                                !field.value
-                                                    ? "bg-red-50 border-red-200"
-                                                    : "bg-muted border-muted"
-                                            }`}
-                                            onClick={() => field.onChange(false)}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className={`p-2 rounded-full ${
-                                                    !field.value ? "bg-red-100" : "bg-muted"
-                                                }`}>
-                                                    <Badge variant={!field.value ? "default" : "outline"} className="bg-red-500">
-                                                        Inactive
-                                                    </Badge>
-                                                </div>
-                                                <div className="text-left">
-                                                    <div className="font-medium">Inactive</div>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        Testimonial will be hidden
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                            render={({field}) => (
+                                <FormItem className="flex flex-row items-center justify-between ">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-base">
+                                            Active Campaign
+                                        </FormLabel>
+                                        <FormDescription>
+                                            Make this campaign visible to customers
+                                        </FormDescription>
                                     </div>
-                                    <FormControl className="hidden">
-                                        <Input type="checkbox" checked={field.value} onChange={field.onChange} />
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                            aria-label="Toggle active status"
+                                        />
                                     </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
                     </CardContent>
 
-                    <CardFooter className="flex justify-between border-t pt-6">
+                    <CardFooter className="flex justify-between pt-6">
                         <Button
                             type="button"
                             variant="outline"

@@ -7,8 +7,8 @@ const ExtraProducts = () => {
     <section className="py-44 relative">
       <div className="absolute top-0 left-0 right-0 bottom-0">
         <Image
-          className="opacity-50"
-          src="/images/bg/img-1.png"
+          className=""
+          src="/images/bg/product_bg.png"
           fill
           alt="background"
         />

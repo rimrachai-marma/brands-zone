@@ -42,7 +42,6 @@ export async function loginAction(
 
     return result;
   } catch (error) {
-    console.log("Login failed: ", error);
 
     return {
       status: "error",
@@ -84,8 +83,6 @@ export async function signupAction(
 
     return result;
   } catch (error) {
-    console.log("Signup failed: ", error);
-
     return {
       status: "error",
       message: "An unexpected error occurred",
@@ -128,7 +125,6 @@ export async function brandsSignupAction(
 
     return result;
   } catch (error) {
-    console.log("Vendor signup failed: ", error);
 
     return {
       status: "error",
@@ -193,7 +189,6 @@ export default async function updatePassword(
 
     return await response.json();
   } catch (error) {
-    console.log("Error updating user password:", error);
     return null;
   }
 }

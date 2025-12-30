@@ -31,7 +31,6 @@ const StatusAlert: React.FC<Props> = ({
     });
   };
 
-  console.log(state);
 
   return (
     <>

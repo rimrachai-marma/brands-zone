@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {CategoryFilterData, CategoryFormData, categoryFormSchema} from '@/schema/category';
+import {CategoryFormData, categoryFormSchema} from '@/schema/category';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -112,15 +112,13 @@ const [parentCategories, setParentCategories] = useState<Category[]>([]);
             if (data.image instanceof File) {
                 formData.append('image', data.image);
             }
-            console.log(category)
             let res;
             if (category?.id) {
                 res = await updateCategory(category.id, formData);
             } else {
                 res = await createCategory(formData);
             }
-            console.log(res)
-            // Check if there are API validation errors
+
             if (res?.data?.errors) {
                 setApiErrors(res.data.errors);
 
@@ -147,7 +145,7 @@ const [parentCategories, setParentCategories] = useState<Category[]>([]);
             setExistingImages(undefined);
             onSuccess?.();
         } catch (err) {
-            console.log(err)
+
             setError(err instanceof Error ? err.message : 'An error occurred');
         } finally {
             setIsLoading(false);

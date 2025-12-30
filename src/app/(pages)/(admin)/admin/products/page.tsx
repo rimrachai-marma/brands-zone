@@ -1,67 +1,117 @@
-import React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { ProductsTable } from "./_components/products-table";
-import { getProducts } from "@/lib/actions/products";
+import { getProductRequests } from "@/lib/actions/admin/products";
+import { ProductRequest, ProductRequestPagination } from "@/types/admin";
+import { useSearchParams, useRouter } from "next/navigation";
 
-export default async function AdminProductsPage(props: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const searchParams = await props.searchParams;
+export default function VendorProductsPageClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState<ProductRequest[]>([]);
+  const [pagination, setPagination] = useState<ProductRequestPagination | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const keyword = searchParams?.keyword as string | undefined;
-  const page = searchParams?.page as string | undefined;
-  const sort = searchParams?.sort as string | undefined;
-  const order = searchParams?.order as string | undefined;
-  const brands = searchParams?.brands as string | undefined;
-  const status = searchParams?.status as string | undefined;
+  // Get current params from URL
+  const currentKeyword = searchParams.get("keyword") || "";
+  const currentPage = searchParams.get("page") || "1";
+  const currentLimit = searchParams.get("limit") || "10";
+  const status = searchParams.get("status") || "published";
+  // Fetch products when URL params change
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      setError(null);
 
-  const query: Record<string, string> = {};
-  if (keyword) {
-    query.keyword = keyword;
+      try {
+        const query: Record<string, string> = {};
+
+        if (currentKeyword) {
+          query.keyword = currentKeyword;
+        }
+
+        if (currentPage) {
+          query.page = currentPage;
+        }
+        if (status) {
+          query.status = status;
+        }
+
+        if (currentLimit) {
+          query.limit = currentLimit;
+        }
+
+        console.log("Fetching with query:", query);
+
+        const result = await getProductRequests(query);
+        console.log(result);
+        if (result) {
+          setProducts(result.data || []);
+          setPagination(result.pagination);
+        } else {
+          setError("Failed to fetch products");
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("An error occurred while fetching products");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [currentKeyword, currentPage, currentLimit]);
+
+
+  // if (isLoading) {
+  //   return (
+  //       <div className="max-w-7xl mx-auto space-y-8">
+  //         <div className="flex justify-between items-end">
+  //           <div>
+  //             <h1 className="text-3xl font-bold text-slate-900">All Products</h1>
+  //             <p className="text-slate-500 mt-1">Review And Manage All Products</p>
+  //           </div>
+  //         </div>
+  //         <div className="animate-pulse space-y-4">
+  //           <div className="h-12 bg-slate-200 rounded"></div>
+  //           <div className="h-64 bg-slate-200 rounded"></div>
+  //         </div>
+  //       </div>
+  //   );
+  // }
+
+  if (error) {
+    return (
+        <div className="max-w-7xl mx-auto space-y-8">
+          <div className="flex justify-between items-end">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">All Products</h1>
+              <p className="text-slate-500 mt-1">Review And Manage All Products</p>
+            </div>
+          </div>
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        </div>
+    );
   }
-
-  if (page) {
-    query.page = page;
-  }
-
-  if (sort) {
-    query.sort = sort;
-  }
-
-  if (order) {
-    query.order = order;
-  }
-
-  if (brands) {
-    query.brands = brands;
-  }
-
-  if (status) {
-    query.status = status;
-  }
-
-  const productsData = await getProducts(query);
-
-  console.log({ productsData });
 
   return (
-    <div className="max-w-[1800px] mx-auto space-y-6">
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Products</h1>
-          <p className="text-slate-500 mt-1">Manage all platform products</p>
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex justify-between items-end">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">All Products</h1>
+            <p className="text-slate-500 mt-1">Review And Manage All Products</p>
+          </div>
         </div>
-        <Button asChild>
-          <Link href="/admin/products/create">
-            <Plus className="h-4 w-4 mr-2" />
-            <span>Add Product</span>
-          </Link>
-        </Button>
-      </div>
 
-      <ProductsTable products={productsData.data?.products || []} />
-    </div>
+        <ProductsTable
+            products={products}
+            pagination={pagination}
+            // Pass handlers if needed, or modify ProductsTable to read from URL
+        />
+      </div>
   );
 }

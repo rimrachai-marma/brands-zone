@@ -11,10 +11,3 @@ export interface Brand {
   products_count?: number;
 }
 
-export interface BrandStatistics {
-  total_products: number;
-  active_products: number;
-  draft_products: number;
-  archived_products: number;
-  total_variants: number;
-}

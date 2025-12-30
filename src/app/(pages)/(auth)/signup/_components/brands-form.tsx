@@ -43,8 +43,6 @@ export default function VendorSignupForm() {
     },
   });
 
-  console.log({ state });
-
   React.useEffect(() => {
     if (state?.status === "success") {
       if (state.data?.user.role === "vendor") {

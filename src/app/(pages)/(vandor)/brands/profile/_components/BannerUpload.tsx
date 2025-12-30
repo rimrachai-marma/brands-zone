@@ -47,8 +47,6 @@ export default function BannerUpload({
 
   const [state, formAction, isPending] = useActionState(updateCover, null);
 
-  console.log(state);
-
   const [isOpen, setIsOpen] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploadedImageId, setUploadedImageId] = useState<string | undefined>(
@@ -99,7 +97,7 @@ export default function BannerUpload({
               id: image.id,
             });
           } catch (error) {
-            console.log(error);
+
             reject(new Error("Invalid JSON response from server"));
           }
         } else {
@@ -112,8 +110,6 @@ export default function BannerUpload({
               )
             );
           } catch (error) {
-            console.log(error);
-
             reject(new Error(`Upload failed with status ${xhr.status}`));
           }
         }
@@ -248,9 +244,6 @@ export default function BannerUpload({
 
   const deleteImage = async (imageId: string) => {
     try {
-      // Replace with your actual delete endpoint
-      console.log(`Deleting image: ${imageId}`);
-      // await fetch(`/api/upload/${imageId}`, { method: 'DELETE' });
     } catch (error) {
       console.error("Delete failed:", error);
     }

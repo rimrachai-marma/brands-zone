@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import StatusAlert from "./status-alert";
+import React from "react";
 
 interface Props {
   status: "pending" | "verified" | "rejected" | "suspended";

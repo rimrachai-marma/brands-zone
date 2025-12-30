@@ -37,7 +37,6 @@ const SingleBlogPost = ({ blog }: { blog: Post }) => {
   });
 
   const onSubmit = async (values: CommentFormValues) => {
-    console.log("Comment submitted:", values);
     reset();
   };
 

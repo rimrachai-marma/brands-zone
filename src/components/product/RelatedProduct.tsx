@@ -8,7 +8,6 @@ interface Props {
 
 const RelatedProduct: React.FC<Props> = async ({ productId }) => {
   const result = await getRelatedProducts(productId);
-    console.log(result);
   if (!result.data) return null;
 
   return (

@@ -15,7 +15,6 @@ export default function EditHeroSectionPage() {
     const [heroSection, setHeroSection] = useState<HeroSection | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    console.log(id)
     useEffect(() => {
         const fetchHeroSection = async () => {
             try {
@@ -25,7 +24,7 @@ export default function EditHeroSectionPage() {
                 const heroId=parseInt(id);
 
                 const response = await getHeroSection(heroId);
-                console.log(response);
+
                 if (response.success && response.data) {
                     setHeroSection(response.data);
                 } else {

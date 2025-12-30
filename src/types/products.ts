@@ -146,6 +146,3 @@ export interface HotProduct {
     campaign_name?: string;
 }
 
-export interface HotProductProps {
-    hotProducts: HotProduct[];
-}

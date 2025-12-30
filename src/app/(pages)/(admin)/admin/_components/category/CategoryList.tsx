@@ -24,12 +24,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {Badge} from '@/components/ui/badge';
 import {Card} from '@/components/ui/card';
 import {
@@ -49,13 +43,12 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import {MoreHorizontal, Edit, Trash2, Eye, ToggleLeft, ToggleRight, Search, Plus} from 'lucide-react';
+import { Edit, Trash2, Search, Plus} from 'lucide-react';
 import Image from "next/image";
 import {TableSkeleton} from "@/app/(pages)/(admin)/admin/_components/category/Skeleton";
 import {CategoryForm} from "./CategoryForm";
-import { toast } from "sonner";
+import {toast} from "react-hot-toast";
 
 export function CategoryList() {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -82,7 +75,7 @@ export function CategoryList() {
             per_page: 10,
             sort: 'name',
             order: 'asc',
-            with_parent:true
+            with_parent: true
         },
     });
 
@@ -168,16 +161,19 @@ export function CategoryList() {
         if (!categoryToDelete) return;
 
         try {
-await deleteCategory(categoryToDelete.slug)
+            const res = await deleteCategory(categoryToDelete.slug)
 
+            if (res.status == 'success') {
+                toast.success(`Category "${categoryToDelete.name}" deleted successfully`);
+                setDeleteDialogOpen(false);
+                setCategoryToDelete(null);
 
-            toast.success(`Category "${categoryToDelete.name}" deleted successfully`);
-            setDeleteDialogOpen(false);
-            setCategoryToDelete(null);
-
-            // Refresh categories list
-            const currentFilters = categoryFilterSchema.parse(form.getValues());
-            fetchCategories(currentFilters);
+                // Refresh categories list
+                const currentFilters = categoryFilterSchema.parse(form.getValues());
+                fetchCategories(currentFilters);
+            } else {
+                toast.error(res.message);
+            }
         } catch (error) {
             toast.error("Failed to delete category");
         }
@@ -322,7 +318,8 @@ await deleteCategory(categoryToDelete.slug)
                                                     sizes="60px"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-muted flex items-center justify-center">
+                                                <div
+                                                    className="w-full h-full bg-muted flex items-center justify-center">
                                                     <span className="text-xs text-muted-foreground">
                                                         No image
                                                     </span>
@@ -355,18 +352,18 @@ await deleteCategory(categoryToDelete.slug)
 
                                     <TableCell className="text-right">
                                         <div className="flex items-center justify-end gap-2">
-                                        <button
-                                            className="cursor-pointer"
-                                            onClick={() => handleEditClick(category)}
-                                        >
-                                            <Edit className="mr-2 h-4 w-4"/>
-                                        </button>
-                                        <button
-                                            className="cursor-pointer text-destructive focus:text-destructive"
-                                            onClick={() => handleDeleteClick(category)}
-                                        >
-                                            <Trash2 className="mr-2 h-4 w-4"/>
-                                        </button>
+                                            <button
+                                                className="cursor-pointer"
+                                                onClick={() => handleEditClick(category)}
+                                            >
+                                                <Edit className="mr-2 h-4 w-4"/>
+                                            </button>
+                                            <button
+                                                className="cursor-pointer text-destructive focus:text-destructive"
+                                                onClick={() => handleDeleteClick(category)}
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4"/>
+                                            </button>
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -426,7 +423,7 @@ await deleteCategory(categoryToDelete.slug)
                     <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
                         <DialogTrigger asChild>
                             <Button>
-                                <Plus className="mr-2 h-4 w-4" />
+                                <Plus className="mr-2 h-4 w-4"/>
                                 Add Category
                             </Button>
                         </DialogTrigger>
@@ -478,7 +475,7 @@ await deleteCategory(categoryToDelete.slug)
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDeleteConfirm}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-destructive text-white! text-destructive-foreground hover:bg-destructive/90"
                         >
                             Delete
                         </AlertDialogAction>

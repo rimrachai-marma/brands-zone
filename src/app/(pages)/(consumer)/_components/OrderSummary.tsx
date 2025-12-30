@@ -25,7 +25,7 @@ const OrderSummary = ({ cartData, items, isSubmitting }: OrderSummaryProps) => {
     const shippingCost = 0.0;
     const tax =  0;
     const grandTotal = cartData?.items?.length > 0 ? cartData.total + shippingCost + tax : 0;
-    console.log(cartData)
+
     return (
         <div className="lg:col-span-1">
             <Card className="sticky top-4">

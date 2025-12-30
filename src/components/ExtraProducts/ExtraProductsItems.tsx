@@ -14,7 +14,7 @@ const ExtraProductsItems = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const result = await getUserRandomProducts({ is_new: false,limit:5 });
+                const result = await getUserRandomProducts({ is_new: false,limit:'5' });
                 if (result.status === "success" && result.data) {
                     setProducts(result.data as UserProduct[]);
                 } else {
@@ -71,10 +71,10 @@ const ExtraProductsItems = () => {
                         visible: { opacity: 1, scale: 1 },
                     }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="group bg-white rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200 border border-gray-100"
+                    className="group bg-white  rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200 border border-gray-100"
                 >
                     {/* Image */}
-                    <div className="relative w-full h-48 bg-gray-50 overflow-hidden">
+                    <div className="relative w-full h-48 bg-gray-50/10 overflow-hidden">
                         <Link href={`/products/${item.slug}`} className="block w-full h-full">
                             <Image
                                 src={item.image}

@@ -29,7 +29,7 @@ const page = async (props: {
     }
 
     const result = await getUserProducts(query);
-    console.log(result)
+
     return (
         <div className="container mx-auto py-10 px-3">
             <div className="space-y-4">

@@ -12,10 +12,10 @@ const HeaderAds = () => {
       {/* content */}
       <div className="relative z-10">
         <h6 className="text-primary font-semibold uppercase group-hover:text-white transition-colors duration-300">
-          black friday
+          Quarterly Sales Event
         </h6>
         <p className="text-xs group-hover:text-white transition-colors duration-300">
-          Up to 70% Off | Use Code: BF2024
+          Up to 25%
         </p>
       </div>
     </Link>

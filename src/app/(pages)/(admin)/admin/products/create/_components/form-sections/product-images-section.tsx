@@ -113,18 +113,15 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
                 publicId: image.id,
               });
             } catch (error) {
-              console.log("Error parsing JSON response:", error);
-
               reject(new Error("Invalid JSON response from server"));
             }
           } else {
             try {
               const errorResponse = JSON.parse(xhr.responseText);
-              console.log(errorResponse);
 
               reject(new Error(errorResponse.message));
             } catch (error) {
-              console.log("Error parsing JSON error response:", error);
+
               reject(new Error(`Upload failed with status ${xhr.status}`));
             }
           }

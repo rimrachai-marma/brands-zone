@@ -19,7 +19,7 @@ const BrandProducts = ({brand}: Props) => {
         const fetchProducts = async () => {
             try {
                 const result = await getUserRandomProducts({brand_id: brand.id, is_new: true});
-                console.log(result);
+
                 if (result.status === "success" && result.data) {
                     setProducts(result.data as UserProduct[]);
                 } else {

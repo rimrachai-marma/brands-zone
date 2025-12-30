@@ -63,12 +63,10 @@ const PersonalInformation: React.FC<Props> = ({ user, vendor }) => {
 
   const handleVerifyEmail = () => {
     // TODO: Implement email verification
-    console.log("Verify email clicked");
   };
 
   const handleVerifyPhone = () => {
     // TODO: Implement phone verification
-    console.log("Verify phone clicked");
   };
 
   return (

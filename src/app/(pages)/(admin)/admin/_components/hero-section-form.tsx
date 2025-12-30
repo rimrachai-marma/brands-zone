@@ -133,12 +133,11 @@ export default function HeroSectionForm({initialData}: HeroSectionFormProps) {
             });
         };
     }, [existingImages]);
-    console.log(form.formState.errors)
     const onSubmit = async (data: HeroSectionFullData) => {
         setIsSubmitting(true);
         clearApiErrors();
         const toastId = toast.loading(initialData ? "Updating hero section..." : "Creating hero section...");
-        console.log(data)
+
         try {
             const formData = new FormData();
 

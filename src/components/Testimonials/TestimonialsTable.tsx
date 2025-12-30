@@ -41,6 +41,7 @@ import {
     XCircle,
     Calendar
 } from "lucide-react";
+import {Switch} from "@/components/ui/switch";
 
 interface TestimonialsTableProps {
     testimonials: Testimonial[];
@@ -87,7 +88,7 @@ export default function TestimonialsTable({
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[80px]">Avatar</TableHead>
+                            <TableHead className="w-20">Avatar</TableHead>
                             <TableHead>Name</TableHead>
                             <TableHead>Rating</TableHead>
                             <TableHead className="hidden md:table-cell">Message</TableHead>
@@ -142,7 +143,7 @@ export default function TestimonialsTable({
                                 >
                                     <TableCell>
                                         <Avatar className="h-10 w-10">
-                                            <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
+                                            <AvatarImage src={testimonial.avatar_url} alt={testimonial.name} className={'object-cover'}/>
                                             <AvatarFallback>
                                                 {testimonial.name.charAt(0).toUpperCase()}
                                             </AvatarFallback>
@@ -178,7 +179,7 @@ export default function TestimonialsTable({
                                     <TableCell className="hidden md:table-cell">
                                         <div className="max-w-md">
                                             <p className="text-sm line-clamp-2">
-                                                {testimonial.message}
+                                                {testimonial.message?.length>50 ? testimonial.message.slice(0,50)+'...':testimonial.message}
                                             </p>
                                         </div>
                                     </TableCell>
@@ -211,39 +212,21 @@ export default function TestimonialsTable({
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="sm">
-                                                    <MoreVertical className="h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => onEdit(testimonial)}>
-                                                    <Edit className="mr-2 h-4 w-4" />
-                                                    Edit
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => onToggleStatus(testimonial.id)}>
-                                                    {testimonial.is_active ? (
-                                                        <>
-                                                            <EyeOff className="mr-2 h-4 w-4" />
-                                                            Deactivate
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <Eye className="mr-2 h-4 w-4" />
-                                                            Activate
-                                                        </>
-                                                    )}
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    className="text-destructive"
-                                                    onClick={() => handleDeleteClick(testimonial.id)}
-                                                >
-                                                    <Trash2 className="mr-2 h-4 w-4" />
-                                                    Delete
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                       <div className={'flex items-center justify-end'}>
+                                           <button onClick={() => onToggleStatus(testimonial.id)} className="mr-6 h-4 w-4">
+                                               <Switch id="is_active" />
+                                           </button>
+                                           <button onClick={() => onEdit(testimonial)}>
+                                               <Edit className="mr-2 h-4 w-4" />
+                                           </button>
+                                           <button
+                                               className="text-destructive"
+                                               onClick={() => handleDeleteClick(testimonial.id)}
+                                           >
+                                               <Trash2 className="mr-2 h-4 w-4" />
+
+                                           </button>
+                                       </div>
                                     </TableCell>
                                 </motion.tr>
                             ))

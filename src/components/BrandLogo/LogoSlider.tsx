@@ -6,6 +6,7 @@ import "swiper/css";
 import { motion } from "framer-motion";
 import React from "react";
 import { FeaturedBrand } from "@/lib/actions/user/brands";
+import Link from "next/link";
 
 interface Props {
   beands: FeaturedBrand[];
@@ -14,7 +15,7 @@ interface Props {
 const LogoGrid: React.FC<Props> = ({ beands }) => {
   // Calculate slidesPerView based on number of logos
   const getSlidesPerView = (logosCount: number) => {
-    console.log(logosCount);
+
     if (logosCount <= 2) return 2; // For 2 logos, show both side by side
     return {
       640: {
@@ -55,15 +56,15 @@ const LogoGrid: React.FC<Props> = ({ beands }) => {
                     whileHover={{ scale: 1.05 }}
                     className="flex justify-center"
                   >
-                    <div className="bg-white rounded-xl my-8 p-8 flex items-center justify-center shadow hover:shadow-xl transition-all duration-300 border border-gray-100 h-32 w-full">
+                    <Link href={`/brands-list/${brand.id}`} className="bg-white rounded-xl my-8 p-8 flex items-center justify-center shadow hover:shadow-xl transition-all duration-300 border border-gray-100 h-32 w-full">
                       <Image
-                        src={brand.logo ?? ""}
+                        src={brand.logo || "https://placehold.co/600x300"}
                         alt={`Brand ${idx + 1}`}
                         width={160}
                         height={60}
                         className="object-contain opacity-80 hover:opacity-100 transition-opacity duration-300"
                       />
-                    </div>
+                    </Link>
                   </motion.div>
                 ))}
               </div>

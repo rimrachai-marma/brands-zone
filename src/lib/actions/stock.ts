@@ -27,7 +27,6 @@ export async function getCurrentStocks(
 
     return await response.json();
   } catch (error) {
-    console.log("Get suppliers error:", error);
     return {
       status: "error",
       message: "Failed to fetch suppliers",

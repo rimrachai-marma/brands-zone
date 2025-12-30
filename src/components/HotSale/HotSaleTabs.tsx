@@ -44,9 +44,9 @@ const CampaignShowcase: React.FC<Props> = ({ campaigns }) => {
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent" />
                     {/* Discount Badge */}
-                    <div className="absolute top-4 right-4">
+                    <div className="absolute top-4 left-4">
                       <span className="bg-amber-100 text-gray-900 text-lg font-bold p-1.5 rounded shadow-md">
-                        🔥 {campaign.discount_percentage}% OFF
+                        🔥 {Number(campaign.discount_percentage)}% OFF
                       </span>
                     </div>
                   </div>

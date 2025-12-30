@@ -44,7 +44,6 @@ export const uploadImage = (
             }
             resolve(image);
           } catch (error) {
-            console.log("Error parsing JSON response:", error);
             reject(new Error("Invalid JSON response from server"));
           }
         } else {
@@ -52,7 +51,6 @@ export const uploadImage = (
             const errorResponse = JSON.parse(xhr.responseText);
             reject(new Error(errorResponse.message));
           } catch (error) {
-            console.log("Error parsing JSON error response:", error);
             reject(new Error(`Upload failed with status ${xhr.status}`));
           }
         }
