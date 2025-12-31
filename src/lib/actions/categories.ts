@@ -1,5 +1,5 @@
 // lib/api/category.ts
-import { ApiResponse, Category, CategoryTree } from "@/types";
+import { ApiResponse, Category } from "@/types";
 import { getAuthToken } from "@/lib/actions/auth";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -157,12 +157,10 @@ export async function toggleCategoryStatus(
   return response.json();
 }
 
-export async function getCategoryTree(): Promise<ApiResponse<CategoryTree>> {
-  const token = await getAuthToken();
+export async function getCategoryTree(): Promise<ApiResponse<Category[]>> {
   const response = await fetch(`${API_BASE_URL}/categories/tree`, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
     },
   });
 

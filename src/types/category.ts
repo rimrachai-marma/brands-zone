@@ -3,7 +3,7 @@ import { PaginationMeta } from ".";
 export interface Category {
   id: string;
   name: string;
-  slug?: string;
+  slug: string;
   description?: string;
   image?: string;
   parent_id?: number | null;
@@ -25,12 +25,7 @@ export interface Categories {
 }
 
 export type CategoryMini = {
-    id: string;
-    name: string;
-    slug?: string;
-}
-
-
-export interface CategoryTree {
-  categories_tree: Category[];
-}
+  id: string;
+  name: string;
+  slug?: string;
+};
