@@ -34,6 +34,7 @@ import { ProductFormData } from "@/schema/products/create";
 interface Props {
   form: UseFormReturn<ProductFormData>;
   uploadEndpoint: string;
+  token?: string;
 }
 
 interface UploadedImage {
@@ -49,7 +50,11 @@ interface UploadState {
   xhr?: XMLHttpRequest;
 }
 
-export function ProductImagesSection({ form, uploadEndpoint }: Props) {
+export function ProductImagesSection({
+  form,
+  uploadEndpoint,
+  token = "",
+}: Props) {
   const [dragActive, setDragActive] = useState<number | null>(null);
   const [uploadStates, setUploadStates] = useState<Record<number, UploadState>>(
     {}
@@ -81,7 +86,6 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
       return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         abortControllersRef.current[index] = xhr;
-
         const formData = new FormData();
         formData.append("image", file);
 
@@ -121,7 +125,6 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
 
               reject(new Error(errorResponse.message));
             } catch (error) {
-
               reject(new Error(`Upload failed with status ${xhr.status}`));
             }
           }
@@ -150,12 +153,13 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
         // Configure request
         xhr.open("POST", uploadEndpoint);
         xhr.timeout = 60000 * 2; // 2 minutes timeout
-
-        // Send request
+        if (token) {
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+        }
         xhr.send(formData);
       });
     },
-    [uploadEndpoint, updateUploadState]
+    [uploadEndpoint, updateUploadState, token]
   );
 
   const cancelUpload = (index: number) => {
@@ -431,7 +435,7 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
                           <img
                             src={form.watch(`images.${index}.url`)}
                             alt={
-                              form.watch(`images.${index}.alt_text`) ||
+                              form.watch(`images.${index}.alt_text`) ??
                               "Preview"
                             }
                             className="h-full w-full rounded-lg object-cover border border-gray-200"
@@ -443,7 +447,8 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
                         </AspectRatio>
                       </div>
                     )}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start md:flex-5 lg:flex-7">
+
+                  <div className=" md:flex-5 lg:flex-7 space-y-4">
                     <FormField
                       control={form.control}
                       name={`images.${index}.url`}
@@ -454,69 +459,51 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
                             <Input
                               placeholder="https://example.com/image.jpg"
                               {...field}
-                              disabled={uploadState?.uploading}
+                              disabled
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name={`images.${index}.alt_text`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Alt Text</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Image description"
-                              {...field}
-                              disabled={uploadState?.uploading}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`images.${index}.publicId`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Image Id</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="cloudinary-public-id"
-                              {...field}
-                              value={field.value ?? ""}
-                              disabled={uploadState?.uploading}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name={`images.${index}.order`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Display Order</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min="0"
-                              {...field}
-                              onChange={(e) =>
-                                field.onChange(parseInt(e.target.value) || 0)
-                              }
-                              disabled={uploadState?.uploading}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                      <FormField
+                        control={form.control}
+                        name={`images.${index}.alt_text`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Alt Text</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Image description"
+                                {...field}
+                                disabled={uploadState?.uploading}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`images.${index}.publicId`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Image Id</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="cloudinary-public-id"
+                                {...field}
+                                value={field.value ?? ""}
+                                disabled={uploadState?.uploading}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -529,7 +516,6 @@ export function ProductImagesSection({ form, uploadEndpoint }: Props) {
               appendImage({
                 url: "",
                 alt_text: "",
-                order: imageFields.length,
               })
             }
             className="w-full"

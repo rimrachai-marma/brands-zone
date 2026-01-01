@@ -126,14 +126,14 @@ function AttributeItem({
   const getPlaceholders = (type: string) => {
     if (type === "color") {
       return {
-        label: "e.g., Navy Blue, Crimson Red",
-        value: "e.g., navy-blue, crimson-red",
+        label: "e.g., Navy Blue, Red",
+        value: "e.g., navy-blue, red",
         description: "Add color options with their hex values",
       };
     }
     return {
-      label: "e.g., Medium, Large. Ram, Storage",
-      value: "e.g., medium, large",
+      label: "e.g., M, L. Ram, Storage",
+      value: "e.g., m, l",
       description: "Add options for this attribute",
     };
   };
@@ -339,8 +339,7 @@ function AttributeItem({
             {optionFields.map((option, optionIndex) => (
               <Badge
                 key={option.id}
-                variant="secondary"
-                className="flex items-center gap-1 px-3 py-1.5"
+                className="bg-gray-200 border-gray-300 text-gray-900 flex items-center gap-1 px-3 py-1.5"
               >
                 {attributeType === "color" && option.metadata?.hex && (
                   <div
@@ -349,9 +348,9 @@ function AttributeItem({
                   />
                 )}
                 <span className="font-medium">{option.label}</span>
-                <span className="text-xs text-gray-500">({option.value})</span>
+                <span className="text-xs text-gray-600">({option.value})</span>
                 {attributeType === "color" && option.metadata?.hex && (
-                  <span className="text-xs text-gray-400 font-mono">
+                  <span className="text-xs font-mono">
                     {option.metadata.hex}
                   </span>
                 )}
@@ -443,10 +442,11 @@ export function AttributesSection({ form }: Props) {
                   slug: "size",
                   type: "select",
                   options: [
-                    { label: "Small", value: "small" },
-                    { label: "Medium", value: "medium" },
-                    { label: "Large", value: "large" },
-                    { label: "X-Large", value: "x-large" },
+                    { label: "S", value: "s" },
+                    { label: "M", value: "m" },
+                    { label: "L", value: "l" },
+                    { label: "XL", value: "xl" },
+                    { label: "XXL", value: "xxl" },
                   ],
                 });
               }}

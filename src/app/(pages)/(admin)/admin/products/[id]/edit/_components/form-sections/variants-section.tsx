@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Package, Sparkles, AlertCircle, Trash2 } from "lucide-react";
 import { ProductFormData } from "@/schema/products/create";
+import toast from "react-hot-toast";
 
 interface Props {
   form: UseFormReturn<ProductFormData>;
@@ -55,30 +56,38 @@ export function VariantsSection({ form, brandName }: Props) {
 
   const generateSku = (variantIndex: number, brand: string) => {
     const name = form.getValues("name");
+
+    if (!name || !brand) {
+      const missing = [!name && "product name", !brand && "brand"]
+        .filter(Boolean)
+        .join(" and ");
+
+      toast.error(`Please enter the ${missing} to generate the SKU.`);
+      return;
+    }
+
     const attributes = form.getValues(`variants.${variantIndex}.attributes`);
 
-    if (name && brand) {
-      const nameAbbr = name
-        .split(" ")
-        .slice(0, 2)
-        .map((word) => word.slice(0, 3))
-        .join("");
+    const nameAbbr = name
+      .split(" ")
+      .slice(0, 2)
+      .map((word) => word.slice(0, 3))
+      .join("");
 
-      const brandAbbr = brand.slice(0, 3);
+    const brandAbbr = brand.slice(0, 3);
 
-      // Add attribute abbreviations if available
-      let attrPart = "";
-      if (attributes && Object.keys(attributes).length > 0) {
-        attrPart = Object.values(attributes)
-          .map((val) => String(val).slice(0, 3))
-          .join("-");
-        attrPart = `-${attrPart}`;
-      }
-
-      const generatedSku = `${brandAbbr}-${nameAbbr}${attrPart}`.toUpperCase();
-
-      form.setValue(`variants.${variantIndex}.sku`, generatedSku);
+    // Add attribute abbreviations if available
+    let attrPart = "";
+    if (attributes && Object.keys(attributes).length > 0) {
+      attrPart = Object.values(attributes)
+        .map((val) => String(val).slice(0, 3))
+        .join("-");
+      attrPart = `-${attrPart}`;
     }
+
+    const generatedSku = `${brandAbbr}-${nameAbbr}${attrPart}`.toUpperCase();
+
+    form.setValue(`variants.${variantIndex}.sku`, generatedSku);
   };
 
   return (
@@ -141,7 +150,7 @@ export function VariantsSection({ form, brandName }: Props) {
                     </h4>
 
                     {attributes && attributes.length > 0 ? (
-                      <div className="space-y-4">
+                      <div className="grid items-start grid-cols-1 md:grid-cols-2 gap-4">
                         {attributes?.map((attr) => (
                           <FormField
                             key={attr.slug}
@@ -150,7 +159,7 @@ export function VariantsSection({ form, brandName }: Props) {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>
-                                  {attr.name}{" "}
+                                  {attr.name}
                                   <span className="text-red-500">*</span>
                                 </FormLabel>
                                 <Select
@@ -269,14 +278,14 @@ export function VariantsSection({ form, brandName }: Props) {
                   <h4 className="font-semibold text-sm text-gray-700 border-b pb-2">
                     Pricing
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                  <div className="grid items-start grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <FormField
                       control={form.control}
                       name={`variants.${index}.price`}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>
-                            Regular Price{" "}
+                            Regular Price
                             <span className="text-red-500">*</span>
                           </FormLabel>
                           <FormControl>
@@ -370,87 +379,60 @@ export function VariantsSection({ form, brandName }: Props) {
                   </div>
                 </div>
 
-                {/* Inventory & Weight */}
                 <div className="space-y-4">
                   <h4 className="font-semibold text-sm text-gray-700 border-b pb-2">
-                    Inventory & Physical Properties
+                    Physical Properties
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-                    <FormField
-                      control={form.control}
-                      name={`variants.${index}.stock_quantity`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stock Quantity</FormLabel>
-                          <FormControl>
+                  <FormField
+                    control={form.control}
+                    name={`variants.${index}.weight`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          Weight <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <div className="grid grid-cols-3 gap-2">
                             <Input
                               type="number"
+                              step="0.01"
                               min="0"
-                              placeholder="0"
+                              placeholder="0.00"
+                              className="col-span-2"
                               {...field}
                               value={field.value ?? ""}
                               onChange={(e) =>
-                                field.onChange(parseInt(e.target.value) || 0)
+                                field.onChange(
+                                  parseFloat(e.target.value) || undefined
+                                )
                               }
                             />
-                          </FormControl>
-                          <FormDescription>Available inventory</FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`variants.${index}.weight`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>
-                            Weight <span className="text-red-500">*</span>
-                          </FormLabel>
-                          <FormControl>
-                            <div className="flex gap-2">
-                              <Input
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="0.00"
-                                className="flex-1"
-                                {...field}
-                                value={field.value ?? ""}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseFloat(e.target.value) || undefined
-                                  )
-                                }
-                              />
-                              <FormField
-                                control={form.control}
-                                name={`variants.${index}.weight_unit`}
-                                render={({ field: unitField }) => (
-                                  <Select
-                                    value={unitField.value}
-                                    onValueChange={unitField.onChange}
-                                  >
-                                    <SelectTrigger className="w-20">
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent align="end">
-                                      <SelectItem value="kg">kg</SelectItem>
-                                      <SelectItem value="g">g</SelectItem>
-                                      <SelectItem value="lb">lb</SelectItem>
-                                      <SelectItem value="oz">oz</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                )}
-                              />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                            <FormField
+                              control={form.control}
+                              name={`variants.${index}.weight_unit`}
+                              render={({ field: unitField }) => (
+                                <Select
+                                  value={unitField.value}
+                                  onValueChange={unitField.onChange}
+                                >
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent align="end">
+                                    <SelectItem value="kg">kg</SelectItem>
+                                    <SelectItem value="g">g</SelectItem>
+                                    <SelectItem value="lb">lb</SelectItem>
+                                    <SelectItem value="oz">oz</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              )}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 {/* Dimensions */}
@@ -458,7 +440,7 @@ export function VariantsSection({ form, brandName }: Props) {
                   <h4 className="font-medium text-sm text-gray-600">
                     Dimensions (Optional)
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <FormField
                       control={form.control}
                       name={`variants.${index}.length`}
@@ -578,7 +560,6 @@ export function VariantsSection({ form, brandName }: Props) {
                 price: 0,
                 sale_price: undefined,
                 cost_price: undefined,
-                stock_quantity: 0,
                 weight: 5,
                 weight_unit: "kg",
                 length: undefined,

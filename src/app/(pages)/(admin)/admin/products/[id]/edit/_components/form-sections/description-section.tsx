@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { ProductFormData } from "@/lib/schemas/products";
+import { ProductFormData } from "@/schema/products/create";
 
 interface Props {
   form: UseFormReturn<ProductFormData>;
@@ -55,14 +55,14 @@ export function DescriptionSection({ form }: Props) {
         />
         <FormField
           control={form.control}
-          name="shortDescription"
+          name="short_description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Short Description</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Brief product summary"
-                  className="min-h-[80px] max-h-[140px]"
+                  className="min-h-20 max-h-[140px]"
                   {...field}
                 />
               </FormControl>

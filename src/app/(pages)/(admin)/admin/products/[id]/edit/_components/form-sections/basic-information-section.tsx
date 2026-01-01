@@ -44,28 +44,6 @@ import { cn } from "@/lib/utils";
 import { ProductFormData } from "@/schema/products/create";
 import { Brand, Category } from "@/types";
 
-export const categoryOptions = [
-  { label: "Electronics", value: "electronics" },
-  { label: "Computers", value: "computers" },
-  { label: "Desktops", value: "desktops" },
-  { label: "Laptops", value: "laptops" },
-  { label: "Mobile Phones", value: "mobile-phones" },
-  { label: "Tablets", value: "tablets" },
-  { label: "Cameras", value: "cameras" },
-  { label: "Fashion", value: "fashion" },
-  { label: "Clothing", value: "clothing" },
-  { label: "Footwear", value: "footwear" },
-  { label: "Accessories", value: "accessories" },
-  { label: "Sports", value: "sports" },
-  { label: "Home & Garden", value: "home-garden" },
-  { Label: "Home & Kitchen", value: "home-kitchen" },
-  { label: "Books", value: "books" },
-  { label: "Toys", value: "toys" },
-  { label: "Beauty", value: "beauty" },
-  { label: "Health", value: "health" },
-  { label: "Automotive", value: "automotive" },
-];
-
 interface Props {
   brands: Brand[];
   categories: Category[];

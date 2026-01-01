@@ -15,7 +15,7 @@ const page = async ({ params }: Props) => {
 
   return (
     <div className="container mx-auto py-10 px-3">
-      <ProductDetails product={result.data?.product} />
+      <ProductDetails product={result.data} />
     </div>
   );
 };

@@ -136,3 +136,5 @@ export const productSchema = z.object({
 });
 
 export type ProductFormData = z.infer<typeof productSchema>;
+
+export type ProductFormUpdateData = Partial<ProductFormData>;
